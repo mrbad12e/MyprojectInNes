@@ -1,92 +1,35 @@
-const Order = require('../models/Order');
-const { verifyToken, verifyTokenAdmin, verifyTokenAuthorization } = require('./verifyToken');
+const router = require('express').Router()
+const {
+    newOrder,
+    getSingleOrder,
+    getAllOrders,
+    myOrders,
+    updateOrder,deleteOrder
+} = require('../controllers/order')
+const {isAuthUser, authRoles} = require('../middleware/auth')
+const {requestReturn, getAllReturns} = require('../controllers/return')
+const {initiateRefund, updateRefundStatus, getAllRefunds} = require('../controllers/refund')
 
-const router = require('express').Router();
+router.route('/order/new').post(isAuthUser, newOrder)
+router.route('/order/:id').get(isAuthUser, getSingleOrder)
+router.route('/orders/me').get(isAuthUser, myOrders)
+router.route('/order/:id/return').post(isAuthUser, requestReturn)
 
-// Create order
-router.post('/', verifyToken, async (req, res) => {
-    const newOrder = new Order(req.body);
+router.route('/admin/orders').get(isAuthUser, authRoles('admin'), getAllOrders)
 
-    try {
-        const savedOrder = await newOrder.save();
-        res.status(200).json(savedOrder);
-    } catch (err) {
-        res.status(500).json(err);
-    }
-});
+router
+    .route('/admin/order/:id')
+    .put(isAuthUser, authRoles('admin'), updateOrder)
+    .delete(isAuthUser, authRoles('admin'), deleteOrder)
 
-// Update order
-router.put('/:id', verifyTokenAdmin, async (req, res) => {
-    try {
-        const updateOrder = await Order.findByIdAndUpdate(
-            req.params.id,
-            {
-                $set: req.body
-            },
-            { new: true }
-        );
-        res.status(200).json(updateOrder);
-    } catch (err) {
-        res.status(500).json(err);
-    }
-});
+router
+    .route('/admin/order/:id/refund')
+    .post(isAuthUser, authRoles('admin'), initiateRefund)
 
-// Get user orders
-router.get('/find/:userId', verifyTokenAuthorization, async (req, res) => {
-    try {
-        const orders = await Order.find({ userId: req.params.userId });
-        res.status(200).json(orders);
-    } catch (err) {
-        res.status(500).json(err);
-    }
-});
+router.route('/admin/order/:orderId/refund/:refundId/status').patch(isAuthUser, authRoles('admin'), updateRefundStatus)
 
-// Get all orders
-router.get('/', verifyTokenAdmin, async (req, res) => {
-    try {
-        const orders = await Order.find();
-        res.status(200).json(orders);
-    } catch (err) {
-        res.status(500).json(err);
-    }
-});
+router.route('/admin/returns').get(isAuthUser, authRoles('admin'), getAllReturns)
 
-// Delete cart
-router.delete('/:id', verifyTokenAdmin, async (req, res) => {
-    try {
-        await Cart.findByIdAndDelete(req.params.id);
-        res.status(200).json('Order has been deleted');
-    } catch (err) {
-        res.status(500).json(err);
-    }
-});
+router.route('/admin/refunds').get(isAuthUser, authRoles('admin'), getAllRefunds)
 
-// Get income
-router.get('/income', verifyTokenAdmin, async (req, res) => {
-    const date = new Date();
-    const lastMonth = new Date(date.setMonth(date.getMonth() - 1));
-    const previousMonth = new Date(new Date().setMonth(lastMonth.getMonth() - 1));
-
-    try {
-        const income = await Order.aggregate([
-            { $match: { createdAt: { $gte: previousMonth } } },
-            {
-                $project: {
-                    month: { $month: '$createdAt' },
-                    sales: '$amount'
-                }
-            },
-            {
-                $group: {
-                    _id: '$month',
-                    total: { $sum: '$sales' }
-                }
-            }
-        ]);
-        res.status(200).json(income);
-    } catch (err) {
-        res.status(500).json(err);
-    }
-});
-
-module.exports = router;
+module.exports = router

@@ -1,21 +1,7 @@
 const router = require("express").Router();
-const stripe = require("stripe")(process.env.STRIPE_KEY);
+const { processPayment, sendStripeApiKey } = require('../controllers/payment')
+const { isAuthUser } = require('../middleware/auth')
 
-router.post("/payment", (req, res) => {
-  stripe.charges.create(
-    {
-      source: req.body.tokenId,
-      amount: req.body.amount,
-      currency: "usd",
-    },
-    (stripeErr, stripeRes) => {
-      if (stripeErr) {
-        res.status(500).json(stripeErr);
-      } else {
-        res.status(200).json(stripeRes);
-      }
-    }
-  );
-});
-
+router.route('/payment').post(isAuthUser, processPayment)
+router.route('/stripeapikey').get(isAuthUser, sendStripeApiKey)
 module.exports = router;
