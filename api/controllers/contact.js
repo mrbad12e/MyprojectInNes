@@ -13,7 +13,7 @@ exports.contactUs = async (req, res) => {
 
         await contact.save();
         await sendEmail({
-            email: 'saptheoanh123@gamil.com',
+            email: 'saptheoanh123@gmail.com',
             subject: 'New Contact Form Submission',
             html: `
             <p>You have received a new contact form submission:</p>

@@ -5,7 +5,7 @@ class ApiFeatures {
     }
     search() {
         const keyword = this.queryStr.keyword
-            ? { name: 
+            ? { title: 
                 {   $regex: this.queryStr.keyword,
                     $options: 'i'
                 }
@@ -32,7 +32,9 @@ class ApiFeatures {
     pagination(resultPerPage) {
         const currentPage = Number(this.queryStr.page) || 1
         const skip = resultPerPage * (currentPage - 1)
-
+        if (!Number.isInteger(currentPage) || currentPage < 1) {
+            currentPage = 1; 
+        }
         this.query = this.query.limit(resultPerPage).skip(skip)
 
         return this

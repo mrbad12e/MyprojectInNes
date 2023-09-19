@@ -25,21 +25,21 @@ export const sliderItems = [
 export const categories = [
     {
         id: 1,
-        img: 'https://images.pexels.com/photos/5886041/pexels-photo-5886041.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
-        title: 'SHIRT STYLE!',
-        cat: "Hat"
+        img: 'https://shop.minecraft.net/cdn/shop/files/MC-HP-Update_q2_22-KIDS-1.gif?v=1646166605',
+        title: 'ALL PRODUCTS',
+        cat: "trend"
     },
     {
         id: 2,
-        img: 'https://images.pexels.com/photos/2983464/pexels-photo-2983464.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
-        title: 'LOUNGEWEAR LOVE',
-        cat: "Hoodies"
+        img: 'https://shop.minecraft.net/cdn/shop/files/MC-HP-Update_q2_22-LIGHTS-1.gif?v=1646166604',
+        title: 'TRENDING PRODUCTS',
+        cat: "hoodies"
     },
     {
         id: 3,
-        img: 'https://images.pexels.com/photos/5480696/pexels-photo-5480696.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500',
-        title: 'LIGHT JACKETS',
-        cat: "Blanket"
+        img: 'https://shop.minecraft.net/cdn/shop/files/MC-HP-Update_q2_22-PLUSH-2_1_1.png?v=1648059350',
+        title: 'MOST RATED',
+        cat: "shirts"
     }
 ];
 

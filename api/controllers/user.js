@@ -1,152 +1,163 @@
-const User = require("../models/User")
-const sendEmail = require("../utils/sendEmail")
-const Crypto = require("crypto")
-const jwt = require("jsonwebtoken")
+const User = require('../models/User');
+const sendEmail = require('../utils/sendEmail');
+const Crypto = require('crypto');
+const jwt = require('jsonwebtoken');
 
 exports.registerUser = async (req, res, next) => {
     try {
-        const { username, email, password } = req.body 
-        const user = await User.create({
+        const { username, email, password } = req.body;
+        const user = new User({
             username: username,
             email: email,
-            password: password,
+            password: password
         })
-        let token = jwt.sign({
-            id: user._id,
-            username: user.username,
-            email: user.email
-        }, process.env.JWT_SECRET_KEY)
-
+        user.save()
+        let token = jwt.sign(
+            {
+                id: user._id,
+                username: user.username,
+                email: user.email,
+            },
+            process.env.JWT_SECRET_KEY
+        );
         const options = {
-            expires: new Date(Date.now() + 90*24*60*60*1000),
-            httpOnly: true
-        }
+            expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+            httpOnly: true,
+        };
 
         res.status(201).cookie('token', token, options).json({
-            success: true, user
-        })
+            success: true,
+            user,
+        });
     } catch (err) {
         res.status(500).json({
-            success: false, message: err.message
-        })
+            success: false,
+            message: err.message,
+        });
     }
-}
+};
 
-exports.loginUser = async ( req, res, next) => {
+exports.loginUser = async (req, res, next) => {
     try {
-        const { username, password } = req.body
-        if (!username || !password ) {
+        const { email, password } = req.body;
+        if (!email || !password) {
             return res.status(400).json({
                 success: false,
-                message: 'Please enter username and password'
-            })
+                message: 'Please enter email and password',
+            });
         }
-
-        const user = await User.findOne({email}).select('+password')
+        const user = await User.findOne({ email }).select('+password');
         if (!user) {
-            return res.status.json({
+            return res.status(401).json({
                 success: false,
-                message: 'Invalid Username or Password'
-            })
+                message: 'Invalid email or Password',
+            });
         }
-        const isPasswordMatched = await user.comparePassword(password)
+        const isPasswordMatched = await user.comparePassword(password);
         if (!isPasswordMatched) {
             return res.status(401).json({
                 success: false,
-                message: 'Invalid Username or Password'
-            })
+                message: 'Invalid email or Password',
+            });
         }
 
-        let token = jwt.sign({
-            id: user._id,
-            username: user.username,
-            email: user.email
-        }, process.env.JWT_SECRET_KEY)
+        let token = jwt.sign(
+            {
+                id: user._id,
+                username: user.username,
+                email: user.email,
+            },
+            process.env.JWT_SECRET_KEY
+        );
 
         const options = {
-            expires: new Date(Date.now() + 90*24*60*60*1000),
-            httpOnly: true
-        }
+            expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+            httpOnly: true,
+        };
 
         res.status(201).cookie('token', token, options).json({
-            success: true, user
-        })
+            success: true,
+            user,
+        });
     } catch (err) {
+        console.log(err.message);
         res.status(500).json({
-            success: false, message: err.message
-        })
+            success: false,
+            message: err.message,
+        });
     }
 }
 
-exports.logout = async(req, res, next) => {
+exports.logout = async (req, res, next) => {
     res.cookie('token', null, {
         expires: new Date(Date.now()),
-        httpOnly: true
-    })
+        httpOnly: true,
+    });
     res.status(200).json({
-        success: true, message: 'User logged out'
-    })
-}
+        success: true,
+        message: 'User logged out',
+    });
+};
 
 exports.forgotPassword = async (req, res, next) => {
-    const user = await User.findOne({ email: req.body.email })
+    const user = await User.findOne({ email: req.body.email });
     if (!user) {
         return res.status(404).json({
             success: false,
-            message: 'User not found'
-        })
+            message: 'User not found',
+        });
     }
 
-    const resetToken = user.GetResetPasswordToken()
+    const resetToken = user.GetResetPasswordToken();
+    console.log(resetToken);
+    console.log(user);
+    await user.save({ validateBeforeSave: false });
 
-    await user.save({ validateBeforeSave: false })
-
-    const resetPasswordURL = `${process.env.FRONTEND_URL}/password/reset/${resetToken}`
+    const resetPasswordURL = `${process.env.FRONTEND_URL}/password/reset/${resetToken}`;
     try {
         await sendEmail({
-            email: user.email, 
-            subject: 'Password Recovery',
-            html: `Your password reset token is:- \n\n ${resetPasswordURL} \n\n If you have not requested this email then, please ignore it.`
-        })
+            email: user.email,
+            subject: 'Password Recovery - Ecommerce',
+            message: `Your password reset token is:- \n\n ${resetPasswordURL} \n\n If you have not requested this email then, please ignore it.`,
+        });
 
         res.status(200).json({
             success: true,
-            message: `Email sent to ${user.email} successfully`
-        })
+            message: `Email sent to ${user.email} successfully`,
+        });
     } catch (err) {
-        user.resetPasswordToken = undefined
-        user.resetPasswordExpire = undefined
+        user.resetPasswordToken = undefined;
+        user.resetPasswordExpire = undefined;
 
-        await user.save({ validateBeforeSave: false })
+        await user.save({ validateBeforeSave: false });
 
         return res.status(500).json({
             success: false,
-            message: err.message
-        })
+            message: err.message,
+        });
     }
-}
+};
 
 exports.resetPassword = async (req, res, next) => {
-    const resetPasswordToken = Crypto
-        .createHash('sha256')
-        .update(req.params.token)
-        .digest('hex');
+    const resetPasswordToken = Crypto.createHash('sha256').update(req.params.token).digest('hex');
+    console.log(resetPasswordToken);
     const user = await User.findOne({
         resetPasswordToken,
-        resetPasswordExpire: {$gt : Date.now()}
-    })
-
+        resetPasswordExpire: { $gt: Date.now() },
+    });
+    console.log(user);
+    console.log(req.body);
     if (!user) {
         return res.status(400).json({
             success: false,
-            message: 'Reset Password Token in invalid or has been expired!'
-        })
+            message: 'Reset Password Token in invalid or has been expired!',
+        });
     }
 
     if (req.body.password !== req.body.confirmPassword) {
         return res.status(400).json({
             success: false,
-            message: 'Password does not match!'
+            message: 'Password does not match!',
         });
     }
 
@@ -159,28 +170,28 @@ exports.resetPassword = async (req, res, next) => {
     let token = jwt.sign(
         {
             id: user._id,
-            name: user.name,
-            email: user.email
+            name: user.username,
+            email: user.email,
         },
         process.env.JWT_SECRET_KEY
     );
 
     const options = {
         expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
-        httpOnly: true
+        httpOnly: true,
     };
 
     res.status(200).cookie('token', token, options).json({
         success: true,
-        user
+        user,
     });
-}
+};
 
 exports.getUserDetails = async (req, res, next) => {
     const user = await User.findById(req.user.id);
     res.status(200).json({
         success: true,
-        user
+        user,
     });
 };
 
@@ -188,21 +199,19 @@ exports.updatePassword = async (req, res, next) => {
     try {
         const user = await User.findById(req.user.id).select('+password');
 
-        const isPasswordMatched = await user.comparePassword(
-            req.body.oldPassword
-        );
+        const isPasswordMatched = await user.comparePassword(req.body.oldPassword);
 
         if (!isPasswordMatched) {
             return res.status(400).json({
                 success: false,
-                message: 'Old Password is incorrect'
+                message: 'Old Password is incorrect',
             });
         }
 
         if (req.body.newPassword !== req.body.confirmPassword) {
             return res.status(400).json({
                 success: false,
-                message: 'Password does not match'
+                message: 'Password does not match',
             });
         }
 
@@ -214,64 +223,68 @@ exports.updatePassword = async (req, res, next) => {
             {
                 id: user._id,
                 name: user.name,
-                email: user.email
+                email: user.email,
             },
             process.env.JWT_SECRET_KEY
         );
 
         const options = {
             expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
-            httpOnly: true
+            httpOnly: true,
         };
 
         res.status(200).cookie('token', token, options).json({
             success: true,
-            user
+            user,
         });
     } catch (err) {
         res.status(500).json({
             success: false,
-            message: err.message
+            message: err.message,
         });
     }
 };
 
 // admin
 exports.getSingleUser = async (req, res, next) => {
-    const user = await User.findById(req.params.id)
+    const user = await User.findById(req.params.id);
 
     if (!user) {
         return res.status(400).json({
             success: false,
-            message: `User does not exist with Id: ${req.params.id}`
-        })
+            message: `User does not exist with Id: ${req.params.id}`,
+        });
     }
 
     res.status(200).json({
-        success: true, user
-    })
-}
+        success: true,
+        user,
+    });
+};
 
 exports.getAllUsers = async (req, res, next) => {
-    const users= await User.find();
+    const users = await User.find();
     res.status(200).json({
-        success: true, users
-    })
-}
+        success: true,
+        users,
+    });
+};
 
 exports.updateUserRole = async (req, res, next) => {
     const newUserData = {
         username: req.body.username,
         email: req.body.email,
-        role: req.body.role
-    }
+        role: req.body.role,
+    };
 
     const user = await User.findByIdAndUpdate(req.params.id, newUserData, {
-        new: true, runValidators: true,
-        useFindAndModify: false
-    })
+        new: true,
+        runValidators: true,
+        useFindAndModify: false,
+    });
 
     res.status(200).json({
-        success: true, user
-    })
-}
+        success: true,
+        user,
+    });
+};
