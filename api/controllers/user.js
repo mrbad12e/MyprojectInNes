@@ -24,6 +24,12 @@ exports.registerUser = async (req, res, next) => {
             expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
             httpOnly: true,
         };
+        await sendEmail({
+            email: user.email, 
+            subject: 'Create account successful',
+            username: user.username,
+            type: 'Welcome'
+        })
 
         res.status(201).cookie('token', token, options).json({
             success: true,
@@ -109,8 +115,7 @@ exports.forgotPassword = async (req, res, next) => {
     }
 
     const resetToken = user.GetResetPasswordToken();
-    console.log(resetToken);
-    console.log(user);
+    
     await user.save({ validateBeforeSave: false });
 
     const resetPasswordURL = `${process.env.FRONTEND_URL}/password/reset/${resetToken}`;
@@ -118,7 +123,8 @@ exports.forgotPassword = async (req, res, next) => {
         await sendEmail({
             email: user.email,
             subject: 'Password Recovery - Ecommerce',
-            message: `Your password reset token is:- \n\n ${resetPasswordURL} \n\n If you have not requested this email then, please ignore it.`,
+            type: 'ResetPassword',
+            link: resetPasswordURL,
         });
 
         res.status(200).json({
@@ -145,8 +151,7 @@ exports.resetPassword = async (req, res, next) => {
         resetPasswordToken,
         resetPasswordExpire: { $gt: Date.now() },
     });
-    console.log(user);
-    console.log(req.body);
+    
     if (!user) {
         return res.status(400).json({
             success: false,

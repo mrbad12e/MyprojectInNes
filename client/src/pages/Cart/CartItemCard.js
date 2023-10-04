@@ -4,12 +4,12 @@ import {Fragment} from 'react'
 export const CartItemCard = ({ item, deleteCartItem }) => {
     return (
         <Fragment>
-            <Box display={'flex'} flex={1}>
+            <Box display={'flex'} flex={1} my={1}>
                 <img src={item.img} style={{ width: '200px' }}/>
                 <Box p={1} display={'inline-flex'} justifyContent={'space-evenly'} flexDirection={'column'}>
                     <Link href={`/product/${item._id}`} underline='none'>{item.title}</Link>
                     <Typography variant='h6'>Price:{'\t'}<b>${item.price}</b></Typography>
-                    <Button variant='outlined' color='warning' onClick={() => deleteCartItem(item._id)}>
+                    <Button sx={{width: '10vw'}} variant='outlined' color='warning' onClick={() => deleteCartItem(item.product)}>
                         Remove
                     </Button>
                 </Box>

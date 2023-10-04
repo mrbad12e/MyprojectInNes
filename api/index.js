@@ -9,7 +9,6 @@ const errorMiddleware = require('./middleware/error')
 const userRoute = require('./routes/user');
 const productRoute = require('./routes/product');
 const orderRoute = require('./routes/order');
-const stripeRoute = require('./routes/stripe');
 
 dotenv.config();
 const mongoose = require('mongoose');
@@ -26,7 +25,6 @@ app.use(express.json());
 app.use('/api/users', userRoute);
 app.use('/api/product', productRoute);
 app.use('/api/order', orderRoute);
-app.use('/api/checkout', stripeRoute);
 
 // CORS
 app.use(async (req, res, next) => {

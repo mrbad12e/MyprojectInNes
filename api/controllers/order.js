@@ -6,11 +6,25 @@ const User = require('../models/User');
 exports.newOrder = async (req, res, next) => {
     try {
         const user = await User.findById(req.user._id)
-        const { shippingInfo, orderItems, paymentInfo, itemsPrice, shippingPrice, totalPrice } = req.body
+        const { shippingInfo, orderItems, itemsPrice, shippingPrice, totalPrice,paymentInfo } = req.body
 
+        const orderItemsWithImages = await Promise.all(
+            orderItems.map(async item => {
+                const product = await Product.findById(item.product);
+                if (product) {
+                    return {
+                        title: item.title,
+                        price: item.price,
+                        quantity: item.quantity,
+                        images: item.img, // Include the images from the product
+                        product: item.product
+                    };
+                }
+            })
+        );
         const order = await Order.create({
             shippingInfo,
-            orderItems,
+            orderItems: orderItemsWithImages,
             paymentInfo,
             itemsPrice,
             shippingPrice,
@@ -18,7 +32,6 @@ exports.newOrder = async (req, res, next) => {
             paidAt: Date.now(),
             user: req.user._id
         })
-
         const randomDays = Math.floor(Math.random() * 8)
         const currentDate = new Date()
         const estimatedDeliveryDate = new Date(
@@ -26,23 +39,15 @@ exports.newOrder = async (req, res, next) => {
             currentDate.getMonth(),
             currentDate.getDate() + randomDays
         )
-        const emailMessage = `<html>
-        <body>
-        <p>Hello ${user.username}!</p>
-        <p>Your order has been placed successfully. Your estimated Date of delivery is ${estimatedDeliveryDate.toDateString()}.</p>
-        <p>Thank you for ordering. For more please visit our website.</p>
-        <p>Here's the image of your ordered items:</p>
-        ${order.orderItems
-            .map(item => `${item.name} - Quantity: ${item.quantity} - Price: $ ${item.price}`)
-            .join('\n')}
-        <p>Total Price: $ ${order.totalPrice}</p>
-        <p>Happy Shopping.</p>
-        </body>
-        </html>`;
+        
         await sendEmail({
+            username: user.username,
             email: user.email,
+            type: 'OrderConfirm',
             subject: 'Order has been placed successfully',
-            html: emailMessage
+            items: order.orderItems,
+            total: order.totalPrice,
+            date: estimatedDeliveryDate.toDateString()
         })
 
         res.status(200).json({

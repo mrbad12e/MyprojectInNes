@@ -23,7 +23,7 @@ export const cartReducer = (state = { cartItems: [], shippingInfo: {} }, action)
             return {
                 ...state,
                 cartItems: state.cartItems.filter(
-                    (i) => i._id !== action.payload
+                    (i) => i.product !== action.payload
                 ),
             }
         case 'SAVE_SHIPPING_INFO':

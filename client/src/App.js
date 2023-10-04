@@ -14,7 +14,10 @@ import Announcement from './components/Announcement/Announcement';
 import Navbar from './components/Navbar/Navbar';
 import Store from './pages/Store/Store';
 import Footer from './components/Footer/Footer';
-
+import Shipping from './pages/Cart/Shipping';
+import ConfirmOrder from './pages/Cart/ConfirmOrder';
+import Payment from './pages/Cart/Payment';
+import Success from './pages/Success'
 
 
 export const App = () => {
@@ -32,7 +35,10 @@ export const App = () => {
                     <Route path='/password/forgot' element={<ForgotPassword/>}/>
                     <Route path='/password/reset/:token' element={<ResetPassword/>}/>
                     <Route path="/cart" element={<Cart/>}/>
-                    {/* <Route path="/success" element={<Success/>}/> */}
+                    <Route path="/success" element={<Success/>}/>
+                    <Route path='/cart/checkout/form' element={<Shipping/>}/>
+                    <Route path='/cart/checkout/confirm' element={<ConfirmOrder/>}/>
+                    <Route path='/cart/checkout/payment' element={<Payment/>}/>
                     <Route path="/login" element={user ? <Navigate to="/" /> : <Login />}/>
                     <Route path="/register" element={user ? <Navigate to="/" /> : <Register />}/>
                 </Routes>

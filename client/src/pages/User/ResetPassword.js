@@ -1,11 +1,13 @@
 import styled from 'styled-components';
 import { mobile } from '../../responsive';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Fragment } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { resetPassword } from '../../redux/actions/userActions';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom';
 import { Input, InputAdornment, InputLabel, FormControl, Button, Typography, IconButton, Box } from '@mui/material';
+import { toast } from 'react-toastify';
+import Loader from '../../components/Loader/Loader';
 const Container = styled.div`
     width: 100%;
     height: 100vh;
@@ -26,8 +28,9 @@ const Wrapper = styled.div`
 `;
 
 const ResetPassword = () => {
-    let { token } = useParams()
+    let { token } = useParams();
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const { error, success, isFetching } = useSelector((state) => state.forgotpassword);
 
     const [password, setPassword] = useState('');
@@ -44,50 +47,59 @@ const ResetPassword = () => {
     };
 
     useEffect(() => {
-        if (error) console.log(error);
-        if (success) console.log(success);
-    }, [dispatch, error, success]);
+        if (error) toast.error(error);
+        if (success) {
+            toast.success('Password reset successfully!');
+            setTimeout(() => navigate('/login'), 2000);
+        }
+    }, [dispatch, error, success, navigate]);
     return (
-        <Container>
-            <Wrapper>
-                <Typography variant="h5">RESET PASSWORD</Typography>
-                <form onSubmit={handleSubmit}>
-                    <FormControl variant="standard" fullWidth sx={{ m: 1 }}>
-                        <InputLabel>Enter your password</InputLabel>
-                        <Input
-                            name="password"
-                            onChange={(e) => setPassword(e.target.value)}
-                            type={showPassword ? 'text' : 'password'}
-                            endAdornment={
-                                <InputAdornment position="start">
-                                    <IconButton onClick={handleClickShowPassword}>
-                                        {showPassword ? <Visibility /> : <VisibilityOff />}
-                                    </IconButton>
-                                </InputAdornment>
-                            }
-                        />
-                    </FormControl>
-                    <FormControl variant="standard" fullWidth sx={{ m: 1 }}>
-                        <InputLabel>Confirm your password</InputLabel>
-                        <Input
-                            name="confirmPassword"
-                            onChange={(e) => setConfirmPassword(e.target.value)}
-                            type={showConfirmPassword ? 'text' : 'password'}
-                            endAdornment={
-                                <InputAdornment position="start">
-                                    <IconButton onClick={handleClickShowConfirmPassword}>
-                                        {showConfirmPassword ? <Visibility /> : <VisibilityOff />}
-                                    </IconButton>
-                                </InputAdornment>
-                            }
-                        />
-                    </FormControl>
-                    <Box>
-                        <Button type="submit">CONFIRM</Button>
-                    </Box>
-                </form>
-            </Wrapper>
-        </Container>
+        <Fragment>
+            {isFetching ? (
+                <Loader />
+            ) : (
+                <Container>
+                    <Wrapper>
+                        <Typography variant="h5">RESET PASSWORD</Typography>
+                        <form onSubmit={handleSubmit}>
+                            <FormControl variant="standard" fullWidth sx={{ m: 1 }}>
+                                <InputLabel>Enter your password</InputLabel>
+                                <Input
+                                    name="password"
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    type={showPassword ? 'text' : 'password'}
+                                    endAdornment={
+                                        <InputAdornment position="start">
+                                            <IconButton onClick={handleClickShowPassword}>
+                                                {showPassword ? <Visibility /> : <VisibilityOff />}
+                                            </IconButton>
+                                        </InputAdornment>
+                                    }
+                                />
+                            </FormControl>
+                            <FormControl variant="standard" fullWidth sx={{ m: 1 }}>
+                                <InputLabel>Confirm your password</InputLabel>
+                                <Input
+                                    name="confirmPassword"
+                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                    type={showConfirmPassword ? 'text' : 'password'}
+                                    endAdornment={
+                                        <InputAdornment position="start">
+                                            <IconButton onClick={handleClickShowConfirmPassword}>
+                                                {showConfirmPassword ? <Visibility /> : <VisibilityOff />}
+                                            </IconButton>
+                                        </InputAdornment>
+                                    }
+                                />
+                            </FormControl>
+                            <Box>
+                                <Button type="submit">CONFIRM</Button>
+                            </Box>
+                        </form>
+                    </Wrapper>
+                </Container>
+            )}
+        </Fragment>
     );
 };
 

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order received</title>
+</head>
+<body>
+    <h1>Hi, <%= options.username %> </h1>
+    <h2>Your order has been placed successfully. Your estimated Date of delivery is <%= options.date %></h2>
+    <h3>Thank you for ordering. For more please visit our website.</h3>
+    <h3>Here's the image of your ordered items:</h3>
+    <% for (const item of options.items ) { %>
+        <span><b><%= item.title %></b> - Quantity: <b><%= item.quantity %></b> - Price: $ <b><%= item.price %></b></span>
+        <br/>
+    <% } %>
+    <br/>
+    <h3><b>Total Price: </b> $ <%= options.total %></h3>
+    <h3>Happy Shopping.</h3>
+</body>
+</html>

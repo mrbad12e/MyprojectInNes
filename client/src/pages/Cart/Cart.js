@@ -3,14 +3,11 @@ import styled from 'styled-components';
 import { Box, Container, IconButton, Input } from '@mui/material';
 import { mobile } from '../../responsive';
 import { useDispatch, useSelector } from 'react-redux';
-import StripeCheckout from 'react-stripe-checkout';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CartItemCard } from './CartItemCard';
 import { addItemsToCart, removeItemsFromCart } from '../../redux/actions/cartActions';
 
-const KEY =
-    'pk_test_51NfkiWFCYYoSI5YA2lqqyqYbOWPNc3lxXSXNTfJNBu8T1HBxuXuBDqHO4ABrMnNdnvgOYDKWTpthwNfE0gRcw5XT00T9rSMSLY';
 
 const Wrapper = styled.div`
     padding: 20px;
@@ -103,23 +100,19 @@ const Button = styled.button`
     background-color: black;
     color: white;
     font-weight: 600;
+    cursor: pointer;
 `;
 
 const Cart = () => {
     const dispatch = useDispatch();
     const cart = useSelector((state) => state.cart);
-    const [stripeToken, setStripeToken] = useState(null);
     const navigate = useNavigate();
 
-    const onToken = (token) => {
-        setStripeToken(token);
-    };
-
     const increaseQuantity = (id, quantity, stock) => {
-        const newQty = quantity + 1
-        if (stock <= quantity) return ;
-        dispatch(addItemsToCart(id, newQty))
-    }
+        const newQty = quantity + 1;
+        if (stock <= quantity) return;
+        dispatch(addItemsToCart(id, newQty));
+    };
 
     const decreaseQuantity = (id, quantity) => {
         const newQty = quantity - 1;
@@ -130,7 +123,8 @@ const Cart = () => {
     const deleteCartItem = (id) => {
         dispatch(removeItemsFromCart(id));
     };
-    let total = parseFloat(cart.cartItems.reduce((acc, item) => acc + item.quantity * item.price, 0.00)).toFixed(2)
+
+    let total = parseFloat(cart.cartItems.reduce((acc, item) => acc + item.quantity * item.price, 0.0)).toFixed(2);
     return (
         <Box>
             <Wrapper>
@@ -144,15 +138,21 @@ const Cart = () => {
                     <TopButton type="filled">CHECKOUT NOW</TopButton>
                 </Top>
                 <Bottom>
-                    <Box flex={3} >
+                    <Box flex={3}>
                         {cart.cartItems.map((item) => (
-                            <Box display={'flex'}>
+                            <Box display={'flex'} key={item.product}>
                                 <CartItemCard item={item} deleteCartItem={deleteCartItem} />
                                 <PriceDetail>
                                     <ProductAmountContainer>
-                                        <IconButton onClick={()=>decreaseQuantity(item.product, item.quantity)}><Remove /></IconButton>
-                                        <Input readOnly type='number' value={item.quantity}/>
-                                        <IconButton onClick={()=>increaseQuantity(item.product, item.quantity, item.stock)}><Add /></IconButton>
+                                        <IconButton onClick={() => decreaseQuantity(item.product, item.quantity)}>
+                                            <Remove />
+                                        </IconButton>
+                                        <Input readOnly type="number" value={item.quantity} />
+                                        <IconButton
+                                            onClick={() => increaseQuantity(item.product, item.quantity, item.stock)}
+                                        >
+                                            <Add />
+                                        </IconButton>
                                     </ProductAmountContainer>
                                     <ProductPrice>$ {item.price * item.quantity}</ProductPrice>
                                 </PriceDetail>
@@ -177,20 +177,8 @@ const Cart = () => {
                             <SummaryItemText>Total</SummaryItemText>
                             <SummaryItemPrice>$ {total}</SummaryItemPrice>
                         </SummaryItem>
-                        <StripeCheckout
-                            name="Shop"
-                            image="https://avatars.githubusercontent.com/u/117703705?v=4"
-                            billingAddress
-                            shippingAddress
-                            description={`Your total is $${cart.total}`}
-                            zipCode={false}
-                            
-                            amount={cart.total * 100}
-                            token={onToken}
-                            stripeKey={KEY}
-                        >
-                            <Button>CHECKOUT NOW</Button>
-                        </StripeCheckout>
+
+                        <Button onClick={() => navigate('/cart/checkout/form')}>CHECKOUT NOW</Button>
                     </Summary>
                 </Bottom>
             </Wrapper>

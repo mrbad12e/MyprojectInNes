@@ -25,7 +25,7 @@ const Product = ({ item }) => {
     return (
         <Card sx={{ width: cardWidthCSS, position: 'relative', margin: '8px' }}>
             <CardMedia component="img" image={item.img[0]} sx={{ zIndex: 2 }}/>
-            {/* <img className='product-img'  /> */}
+            
             <CardContent sx={ContentCSS}>
                 <div className='product-icon'>
                     <ShoppingCartOutlined />

@@ -1,4 +1,3 @@
-const stripe = require('stripe')(process.env.STRIPE_KEY);
 const Return = require('../models/Return')
 const Refund = require('../models/Refund')
 const Order = require('../models/Order')
