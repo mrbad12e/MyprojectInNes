@@ -251,6 +251,62 @@ exports.updatePassword = async (req, res, next) => {
 };
 
 // admin
+exports.loginAdmin = async (req, res, next) => {
+    try {
+        const { email, password } = req.body;
+        if (!email || !password) {
+            return res.status(400).json({
+                success: false,
+                message: 'Please enter email and password',
+            });
+        }
+        const user = await User.findOne({ email }).select('+password');
+        if (!user) {
+            return res.status(401).json({
+                success: false,
+                message: 'Invalid email or Password',
+            });
+        }
+        const isPasswordMatched = await user.comparePassword(password);
+        if (!isPasswordMatched) {
+            return res.status(401).json({
+                success: false,
+                message: 'Invalid email or Password',
+            });
+        }
+        if (user.role === 'user') {
+            return res.status(401).json({
+                success: false,
+                message: 'User role is not allowed to access'
+            })
+        }
+
+        let token = jwt.sign(
+            {
+                id: user._id,
+                username: user.username,
+                email: user.email,
+            },
+            process.env.JWT_SECRET_KEY
+        );
+
+        const options = {
+            expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+            httpOnly: true,
+        };
+
+        res.status(201).cookie('token', token, options).json({
+            success: true,
+            user,
+        });
+    } catch (err) {
+        console.log(err.message);
+        res.status(500).json({
+            success: false,
+            message: err.message,
+        });
+    }
+}
 exports.getSingleUser = async (req, res, next) => {
     const user = await User.findById(req.params.id);
 

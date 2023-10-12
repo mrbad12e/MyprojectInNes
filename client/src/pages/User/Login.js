@@ -51,7 +51,6 @@ const Login = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         dispatch(login(email, password));
-        // navigate('/')
     };
 
     useEffect(() => {

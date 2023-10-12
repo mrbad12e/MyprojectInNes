@@ -9,6 +9,7 @@ const errorMiddleware = require('./middleware/error')
 const userRoute = require('./routes/user');
 const productRoute = require('./routes/product');
 const orderRoute = require('./routes/order');
+const adminRoute = require('./routes/admin')
 
 dotenv.config();
 const mongoose = require('mongoose');
@@ -16,7 +17,7 @@ mongoose.connect(process.env.MONGODB_URL, { useNewUrlParser: true, useUnifiedTop
     .then(()=> console.log('MongoDB connected'))
     .catch(err => console.log(err))
 
-app.use(express.static(`${__dirname}/public`))
+// app.use(express.static(`${__dirname}/public`))
 
 app.use(cors());
 app.use(cookieParser())
@@ -25,6 +26,7 @@ app.use(express.json());
 app.use('/api/users', userRoute);
 app.use('/api/product', productRoute);
 app.use('/api/order', orderRoute);
+app.use('/admin', adminRoute)
 
 // CORS
 app.use(async (req, res, next) => {
