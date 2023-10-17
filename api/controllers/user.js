@@ -254,6 +254,7 @@ exports.updatePassword = async (req, res, next) => {
 exports.loginAdmin = async (req, res, next) => {
     try {
         const { email, password } = req.body;
+        console.log(email);
         if (!email || !password) {
             return res.status(400).json({
                 success: false,
@@ -271,7 +272,7 @@ exports.loginAdmin = async (req, res, next) => {
         if (!isPasswordMatched) {
             return res.status(401).json({
                 success: false,
-                message: 'Invalid email or Password',
+                message: 'Invalid Password',
             });
         }
         if (user.role === 'user') {

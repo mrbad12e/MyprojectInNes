@@ -45,14 +45,9 @@ module.exports = {
     devServer: {
         port: 8080,
         proxy: {
-            '/admin':{
-                target: `http://localhost:5000`
-            }
+            '/admin': `http://localhost:5000`,
         },
-        static: {
-            directory: path.resolve(__dirname, '../static'),
-            publicPath: '/static',
-        },
+
         historyApiFallback: true,
     },
 };

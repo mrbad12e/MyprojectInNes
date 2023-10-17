@@ -1,6 +1,7 @@
 import { Link, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
 import { Title } from './Title';
 import { Fragment } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 function createData(id, date, name, shipTo, paymentMethod, amount) {
     return { id, date, name, shipTo, paymentMethod, amount };
@@ -15,6 +16,8 @@ const rows = [
 ];
 
 export const Orders = () => {
+    const { recentOrders, isFetching } = useSelector((state) => state.recentOrders)
+    console.log(recentOrders);
     return (
         <Fragment>
             <Title>Recent Orders</Title>
@@ -29,13 +32,13 @@ export const Orders = () => {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {rows.map((row) => (
-                        <TableRow key={row.id}>
-                            <TableCell>{row.date}</TableCell>
-                            <TableCell>{row.name}</TableCell>
-                            <TableCell>{row.shipTo}</TableCell>
-                            <TableCell>{row.paymentMethod}</TableCell>
-                            <TableCell align="right">{`$${row.amount}`}</TableCell>
+                    {recentOrders?.map((order) => (
+                        <TableRow key={order._id}>
+                            <TableCell>{order.createdAt}</TableCell>
+                            <TableCell>{order.user.username}</TableCell>
+                            <TableCell>{order.shippingInfo.address}</TableCell>
+                            <TableCell>{order.paymentInfo.status}</TableCell>
+                            <TableCell align="right">{`$${order.totalPrice}`}</TableCell>
                         </TableRow>
                     ))}
                 </TableBody>

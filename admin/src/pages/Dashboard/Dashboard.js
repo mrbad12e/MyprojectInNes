@@ -3,8 +3,15 @@ import { CssBaseline, Box, Toolbar, Container, Grid, Paper, Typography, Link } f
 import { Chart } from './Chart';
 import { Deposit } from './Deposit';
 import { Orders } from './Orders';
+import { useDispatch } from 'react-redux';
+import { useEffect } from 'react';
+import { recentOrders } from '../../redux/actions/orderActions';
 
 function Copyright(props) {
+    const dispatch = useDispatch()
+    useEffect(() => {
+        dispatch(recentOrders())
+    }, [dispatch])
     return (
         <Typography variant="body2" color="text.secondary" align="center" {...props}>
             {'Copyright © '}
