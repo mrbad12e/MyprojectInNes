@@ -1,6 +1,6 @@
 const router = require('express').Router()
 const {loginAdmin, logout, forgotPassword, resetPassword, updateUserRole, getAllUsers, getSingleUser} =require('../controllers/user')
-const { getRecentOrders } = require('../controllers/order')
+const { getRecentOrders, getAllOrders, updateOrder, deleteOrder } = require('../controllers/order')
 
 const {isAuthUser, authRoles} = require('../middleware/auth')
 
@@ -17,5 +17,9 @@ router
     .put(isAuthUser, authRoles('admin'), updateUserRole)
 
 router.route('/order/recent').get(isAuthUser, authRoles("admin"), getRecentOrders)
+router.route('/order/all').get(isAuthUser, authRoles('admin'), getAllOrders)
+router.route('/order/:id')
+    .put(isAuthUser, authRoles("admin"), updateOrder)
+    .delete(isAuthUser, authRoles("admin"), deleteOrder)
 
 module.exports = router

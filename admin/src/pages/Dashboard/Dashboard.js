@@ -8,10 +8,7 @@ import { useEffect } from 'react';
 import { recentOrders } from '../../redux/actions/orderActions';
 
 function Copyright(props) {
-    const dispatch = useDispatch()
-    useEffect(() => {
-        dispatch(recentOrders())
-    }, [dispatch])
+    
     return (
         <Typography variant="body2" color="text.secondary" align="center" {...props}>
             {'Copyright © '}
@@ -24,6 +21,10 @@ function Copyright(props) {
 const defaultTheme = createTheme();
 
 export const Dashboard = () => {
+    const dispatch = useDispatch()
+    useEffect(() => {
+        dispatch(recentOrders())
+    }, [dispatch])
     return (
         <ThemeProvider theme={defaultTheme}>
             <Box sx={{ display: 'flex' }}>

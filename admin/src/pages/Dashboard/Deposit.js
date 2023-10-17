@@ -1,5 +1,5 @@
 import { Link, Typography } from '@mui/material';
-import { Title } from './Title';
+import { Title } from '../../components/Title/Title';
 import { Fragment } from 'react';
 
 export const Deposit = () => {

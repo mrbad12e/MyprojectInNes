@@ -15,12 +15,6 @@ router.route('/order/:id').get(isAuthUser, getSingleOrder)
 router.route('/orders/me').get(isAuthUser, myOrders)
 router.route('/order/:id/return').post(isAuthUser, requestReturn)
 
-router.route('/admin/orders').get(isAuthUser, authRoles('admin'), getAllOrders)
-
-router
-    .route('/admin/order/:id')
-    .put(isAuthUser, authRoles('admin'), updateOrder)
-    .delete(isAuthUser, authRoles('admin'), deleteOrder)
 
 router
     .route('/admin/order/:id/refund')

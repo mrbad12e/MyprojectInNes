@@ -17,7 +17,7 @@ export const addProfile = (form) => async (dispatch) =>{
         dispatch({ type: 'ADD_PROFILE_REQUEST' })
         console.log(form);
         const config = { headers: { 'Content-Type': 'multipart/form-data' } };
-        const { data } = await axios.post('/api/users/me/profile/add', form , {config})
+        const { data } = await axios.post('/admin/users/me/profile/add', form , {config})
 
         dispatch({ type: 'ADD_PROFILE_SUCCESS', payload: data.message })
     } catch (error) {
@@ -29,7 +29,7 @@ export const loadUser = () => async (dispatch) => {
     try {
         dispatch({ type: 'LOAD_USER_REQUEST' });
 
-        const { data } = await axios.get('/api/users/me');
+        const { data } = await axios.get('/admin/users/me');
 
         dispatch({ type: 'LOAD_USER_SUCCESS', payload: data.user });
     } catch (error) {
@@ -39,7 +39,7 @@ export const loadUser = () => async (dispatch) => {
 
 export const logout = () => async (dispatch) => {
     try {
-        await axios.get('/api/users/logout');
+        await axios.get('/admin/users/logout');
         dispatch({ type: 'LOGOUT_SUCCESS' });
     } catch (error) {
         dispatch({ type: 'LOGOUT_FAIL', payload: error.response.data.message });
@@ -80,3 +80,14 @@ export const resetPassword = (token, password, confirmPassword) => async (dispat
         dispatch({ type: 'RESET_PASSWORD_FAIL', payload: error.response.data.message });
     }
 };
+
+export const getAllUsers = (keyword = '', currentPage = 1) => async (dispatch) => {
+    try {
+        dispatch({ type: 'ALL_USER_REQUEST' })
+        let link = `/admin/users?keyword=${keyword}&page=${currentPage}`
+        const { data } = await axios.get(link)
+        dispatch({ type: 'ALL_USERS_SUCCESS', payload: data })
+    } catch (error) {
+        dispatch({ type: 'ALL_USERS_FAIL', payload: error.response.data.message })
+    }
+}

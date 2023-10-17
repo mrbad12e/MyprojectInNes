@@ -101,7 +101,7 @@ exports.getAllOrders = async (req, res, next) => {
 };
 
 exports.getRecentOrders = async (req, res, next) => {
-    let ordersCount = 8;
+    let ordersCount = process.env.RESULT_PER_PAGE;
     const orders = await Order.find().limit(ordersCount).sort({ createdAt: -1 }).populate('user');
     ordersCount = orders.length;
 

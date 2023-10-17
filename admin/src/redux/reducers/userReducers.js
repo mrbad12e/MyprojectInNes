@@ -90,3 +90,25 @@ export const forgotPasswordReducer = (state = {}, action) => {
             return state;
     }
 };
+
+export const allUsersReducers = ( state= { users: [] }, action ) => {
+    switch(action.type) {
+        case 'ALL_USERS_REQUEST':
+            return {
+                ...state, isFetching: true
+            }
+        case 'ALL_USERS_SUCCESS':
+            return {
+                ...state, isFetching: false, users: action.payload.users,
+                userCount: action.payload.userCount,
+                resultPerPage: action.payload.resultPerPage,
+                filteredUsersCount: action.payload.filteredUsersCount
+            }
+        case 'ALL_USERS_FAIL':
+            return {
+                ...state, isFetching: false, error: action.payload
+            }
+        default:
+            return state
+    }
+}

@@ -29,8 +29,8 @@ const UserTable = new mongoose.Schema(
             type: String,
             default: 'user'
         },
-        resetPasswordToken: { type: String, default: null },
-        resetPasswordExpire: { type: Date, default: null }, 
+        resetPasswordToken: { type: String, default: null, select: false },
+        resetPasswordExpire: { type: Date, default: null, select: false }, 
     },
     { timestamps: true }
 );

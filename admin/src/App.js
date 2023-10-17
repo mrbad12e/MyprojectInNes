@@ -5,10 +5,8 @@ import Login from './pages/User/Login';
 import { Profile } from './pages/User/Profile';
 import { Dashboard } from './pages/Dashboard/Dashboard';
 import { Navbar } from './components/Navbar/Navbar';
-import { recentOrders } from './redux/actions/orderActions';
-
+import { Customers } from './pages/Customers/Customers'
 export const App = () => {
-    const dispatch = useDispatch()
     
     const user = useSelector((state) => state.user.currentUser)
     console.log(useSelector((state) => state));
@@ -17,9 +15,10 @@ export const App = () => {
         <BrowserRouter>
             <Navbar/>
             <Routes>
-                <Route path='/' element={<Login/>}/>
+                <Route exact path='/' element={<Login/>}/>
                 <Route path='/me' element={<Profile/>}/>
                 <Route path='/dashboard' element={<Dashboard/>}/>
+                <Route path='/customers' element={<Customers/>}/>
             </Routes>
         </BrowserRouter>
     )

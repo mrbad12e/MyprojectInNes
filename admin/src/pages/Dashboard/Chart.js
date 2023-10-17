@@ -1,4 +1,4 @@
-import { Title } from './Title';
+import { Title } from '../../components/Title/Title';
 import { useTheme } from '@mui/material';
 import { Fragment } from 'react';
 import { LineChart, YAxis, XAxis, Line, Label, ResponsiveContainer } from 'recharts';

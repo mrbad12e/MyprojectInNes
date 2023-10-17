@@ -16,7 +16,7 @@ export const mainListItems = (
             </ListItemIcon>
             <ListItemText primary="Orders" />
         </ListItemButton>
-        <ListItemButton>
+        <ListItemButton href='/customers'>
             <ListItemIcon>
                 <People />
             </ListItemIcon>

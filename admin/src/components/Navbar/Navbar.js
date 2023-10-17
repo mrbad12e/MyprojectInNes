@@ -1,10 +1,13 @@
 import { CssBaseline, Divider, IconButton, List, Toolbar, Typography, Box } from '@mui/material';
-import { Adb, Menu, ChevronRight, ChevronLeft } from '@mui/icons-material';
+import { Menu, ChevronRight, ChevronLeft } from '@mui/icons-material';
 import { styled, useTheme } from '@mui/material/styles';
 import MuiDrawer from '@mui/material/Drawer';
-import MuiAppBar from '@mui/material/AppBar'
-import { useState } from 'react';
+import MuiAppBar from '@mui/material/AppBar';
+import { useEffect, useState } from 'react';
 import { mainListItems, secondaryListItems } from './listItems';
+import { useSelector } from 'react-redux';
+import { LogOut } from './Logout';
+import { useNavigate } from 'react-router-dom';
 
 const openedMixin = (theme) => ({
     width: 240,
@@ -70,32 +73,41 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 }));
 
 export const Navbar = () => {
+    const navigate = useNavigate()
+    const user = useSelector((state) => state.user.currentUser);
+    const isAuthenticated = useSelector((state) => state.user.isAuthenticated)
     const theme = useTheme();
     const [open, setOpen] = useState(false);
+
     const handleDrawerOpen = () => {
         setOpen(true);
     };
-
     const handleDrawerClose = () => {
         setOpen(false);
     };
-
+    useEffect(()=>{
+        if (!isAuthenticated) navigate('/')
+    }, [navigate, isAuthenticated])
     return (
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
             <AppBar position="fixed" open={open}>
                 <Toolbar>
-                    <IconButton
-                        edge="start"
-                        color="inherit"
-                        onClick={handleDrawerOpen}
-                        sx={{
-                            marginRight: 5,
-                            ...(open && { display: 'none' }),
-                        }}
-                    >
-                        <Menu />
-                    </IconButton>
+                    {user ? (
+                        <IconButton
+                            edge="start"
+                            color="inherit"
+                            onClick={handleDrawerOpen}
+                            sx={{
+                                marginRight: 5,
+                                ...(open && { display: 'none' }),
+                            }}
+                        >
+                            <Menu />
+                        </IconButton>
+                    ) : (
+                        <></>
+                    )}
                     <Typography
                         variant="h6"
                         noWrap
@@ -112,21 +124,27 @@ export const Navbar = () => {
                     >
                         Admin Site
                     </Typography>
+                    <Box sx={{ flexGrow: 1 }} />
+                    {user ? <LogOut /> : <></>}
                 </Toolbar>
             </AppBar>
-            <Drawer variant="permanent" open={open}>
-                <DrawerHeader>
-                    <IconButton onClick={handleDrawerClose}>
-                        {theme.direction === 'rtl' ? <ChevronRight /> : <ChevronLeft />}
-                    </IconButton>
-                </DrawerHeader>
-                <Divider />
-                <List>
-                    {mainListItems}
-                    <Divider sx={{ my: 1 }} />
-                    {secondaryListItems}
-                </List>
-            </Drawer>
+            {user ? (
+                <Drawer variant="permanent" open={open}>
+                    <DrawerHeader>
+                        <IconButton onClick={handleDrawerClose}>
+                            {theme.direction === 'rtl' ? <ChevronRight /> : <ChevronLeft />}
+                        </IconButton>
+                    </DrawerHeader>
+                    <Divider />
+                    <List>
+                        {mainListItems}
+                        <Divider sx={{ my: 1 }} />
+                        {secondaryListItems}
+                    </List>
+                </Drawer>
+            ) : (
+                <></>
+            )}
         </Box>
     );
 };

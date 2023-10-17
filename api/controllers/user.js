@@ -2,6 +2,7 @@ const User = require('../models/User');
 const sendEmail = require('../utils/sendEmail');
 const Crypto = require('crypto');
 const jwt = require('jsonwebtoken');
+const ApiFeatures = require('../utils/apifeatures')
 
 exports.registerUser = async (req, res, next) => {
     try {
@@ -254,7 +255,6 @@ exports.updatePassword = async (req, res, next) => {
 exports.loginAdmin = async (req, res, next) => {
     try {
         const { email, password } = req.body;
-        console.log(email);
         if (!email || !password) {
             return res.status(400).json({
                 success: false,
@@ -325,10 +325,17 @@ exports.getSingleUser = async (req, res, next) => {
 };
 
 exports.getAllUsers = async (req, res, next) => {
-    const users = await User.find();
-    res.status(200).json({
+    const resultPerPage = process.env.ADMIN_RESULT_PER_PAGE
+    const userCount = await User.countDocuments()
+    const apifeature = new ApiFeatures(User.find().select("_id username email role"), req.query).search().filter()
+    
+    let users = await apifeature.query
+    let filteredUsersCount = users.length
+    apifeature.pagination(resultPerPage)
+    users = await apifeature.query.clone()
+    res.json({
         success: true,
-        users,
+        users, userCount, resultPerPage, filteredUsersCount
     });
 };
 
