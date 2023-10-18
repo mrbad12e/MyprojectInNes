@@ -1,11 +1,9 @@
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { Box, CssBaseline, Toolbar, Container, Paper } from '@mui/material';
-import { CustomerTable } from './CustomerTable';
-import Loader from '../../components/Loader/Loader';
+import { Box, CssBaseline, Toolbar, Container, Paper, Grid } from '@mui/material';
 
 const defaultTheme = createTheme();
 
-export const Customers = () => {
+export const Customers = ({ children }) => {
     return (
         <ThemeProvider theme={defaultTheme}>
             <Box sx={{ display: 'flex' }}>
@@ -18,13 +16,13 @@ export const Customers = () => {
                         flexGrow: 1,
                         height: '100vh',
                         overflow: 'auto',
-                    }}
+                    }} 
                 >
                     <Toolbar />
                     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-                        <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                            <CustomerTable />
-                        </Paper>
+                        <Grid container spacing={3}>
+                            {children}
+                        </Grid>
                     </Container>
                 </Box>
             </Box>

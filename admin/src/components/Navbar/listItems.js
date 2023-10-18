@@ -4,7 +4,7 @@ import { Fragment } from 'react';
 
 export const mainListItems = (
     <Fragment>
-        <ListItemButton>
+        <ListItemButton href='/dashboard'>
             <ListItemIcon>
                 <Dashboard />
             </ListItemIcon>

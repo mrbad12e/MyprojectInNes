@@ -2,7 +2,7 @@ const User = require('../models/User');
 const sendEmail = require('../utils/sendEmail');
 const Crypto = require('crypto');
 const jwt = require('jsonwebtoken');
-const ApiFeatures = require('../utils/apifeatures')
+const ApiFeatures = require('../utils/apifeatures');
 
 exports.registerUser = async (req, res, next) => {
     try {
@@ -10,9 +10,9 @@ exports.registerUser = async (req, res, next) => {
         const user = new User({
             username: username,
             email: email,
-            password: password
-        })
-        user.save()
+            password: password,
+        });
+        user.save();
         let token = jwt.sign(
             {
                 id: user._id,
@@ -26,11 +26,11 @@ exports.registerUser = async (req, res, next) => {
             httpOnly: true,
         };
         await sendEmail({
-            email: user.email, 
+            email: user.email,
             subject: 'Create account successful',
             username: user.username,
-            type: 'Welcome'
-        })
+            type: 'Welcome',
+        });
 
         res.status(201).cookie('token', token, options).json({
             success: true,
@@ -93,7 +93,7 @@ exports.loginUser = async (req, res, next) => {
             message: err.message,
         });
     }
-}
+};
 
 exports.logout = async (req, res, next) => {
     res.cookie('token', null, {
@@ -116,7 +116,7 @@ exports.forgotPassword = async (req, res, next) => {
     }
 
     const resetToken = user.GetResetPasswordToken();
-    
+
     await user.save({ validateBeforeSave: false });
 
     const resetPasswordURL = `${process.env.FRONTEND_URL}/password/reset/${resetToken}`;
@@ -152,7 +152,7 @@ exports.resetPassword = async (req, res, next) => {
         resetPasswordToken,
         resetPasswordExpire: { $gt: Date.now() },
     });
-    
+
     if (!user) {
         return res.status(400).json({
             success: false,
@@ -278,8 +278,8 @@ exports.loginAdmin = async (req, res, next) => {
         if (user.role === 'user') {
             return res.status(401).json({
                 success: false,
-                message: 'User role is not allowed to access'
-            })
+                message: 'User role is not allowed to access',
+            });
         }
 
         let token = jwt.sign(
@@ -307,7 +307,7 @@ exports.loginAdmin = async (req, res, next) => {
             message: err.message,
         });
     }
-}
+};
 exports.getSingleUser = async (req, res, next) => {
     const user = await User.findById(req.params.id);
 
@@ -325,17 +325,20 @@ exports.getSingleUser = async (req, res, next) => {
 };
 
 exports.getAllUsers = async (req, res, next) => {
-    const resultPerPage = process.env.ADMIN_RESULT_PER_PAGE
-    const userCount = await User.countDocuments()
-    const apifeature = new ApiFeatures(User.find().select("_id username email role"), req.query).search().filter()
-    
-    let users = await apifeature.query
-    let filteredUsersCount = users.length
-    apifeature.pagination(resultPerPage)
-    users = await apifeature.query.clone()
+    const resultPerPage = process.env.ADMIN_RESULT_PER_PAGE;
+    const userCount = await User.countDocuments();
+    const apifeature = new ApiFeatures(User.find().select('_id username email role'), req.query).search().filter();
+
+    let users = await apifeature.query;
+    let filteredUsersCount = users.length;
+    apifeature.pagination(resultPerPage);
+    users = await apifeature.query.clone();
     res.json({
         success: true,
-        users, userCount, resultPerPage, filteredUsersCount
+        users,
+        userCount,
+        resultPerPage,
+        filteredUsersCount,
     });
 };
 
@@ -357,3 +360,18 @@ exports.updateUserRole = async (req, res, next) => {
         user,
     });
 };
+
+exports.deleteUser = async (req, res, next) => {
+    try {
+        await User.findByIdAndDelete(req.body.id)
+        res.status(200).json({
+            success: true,
+            message: 'User has been deleted'
+        })
+    } catch (error) {
+        res.status(400).json({
+            success: false,
+            message: error
+        })
+    }
+}

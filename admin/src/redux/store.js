@@ -2,7 +2,7 @@ import { configureStore, combineReducers, getDefaultMiddleware } from '@reduxjs/
 import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 import thunk from 'redux-thunk'
-import { userReducers, profileReducer, forgotPasswordReducer, allUsersReducers } from './reducers/userReducers'
+import { userReducers, profileReducer, forgotPasswordReducer, allUsersReducers, userActionReducer } from './reducers/userReducers'
 import { recentOrderReducers } from './reducers/orderReducers'
 
 const persistConfig = {
@@ -14,6 +14,7 @@ const rootReducer = combineReducers({
     profile: profileReducer,
     forgotPassword: forgotPasswordReducer,
     allUsers: allUsersReducers,
+    oneUser: userActionReducer,
 
     recentOrders: recentOrderReducers,
 })

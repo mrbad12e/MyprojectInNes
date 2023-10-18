@@ -12,31 +12,6 @@ export const login = (email, password) => async (dispatch) => {
     }
 };
 
-export const addProfile = (form) => async (dispatch) =>{
-    try {
-        dispatch({ type: 'ADD_PROFILE_REQUEST' })
-        console.log(form);
-        const config = { headers: { 'Content-Type': 'multipart/form-data' } };
-        const { data } = await axios.post('/admin/users/me/profile/add', form , {config})
-
-        dispatch({ type: 'ADD_PROFILE_SUCCESS', payload: data.message })
-    } catch (error) {
-        dispatch({ type: 'ADD_PROFILE_FAIL', payload: error.message });
-    }
-}
-
-export const loadUser = () => async (dispatch) => {
-    try {
-        dispatch({ type: 'LOAD_USER_REQUEST' });
-
-        const { data } = await axios.get('/admin/users/me');
-
-        dispatch({ type: 'LOAD_USER_SUCCESS', payload: data.user });
-    } catch (error) {
-        dispatch({ type: 'LOAD_USER_FAIL', payload: error.response.data.message });
-    }
-};
-
 export const logout = () => async (dispatch) => {
     try {
         await axios.get('/admin/users/logout');
@@ -89,5 +64,22 @@ export const getAllUsers = (keyword = '', currentPage = 1) => async (dispatch) =
         dispatch({ type: 'ALL_USERS_SUCCESS', payload: data })
     } catch (error) {
         dispatch({ type: 'ALL_USERS_FAIL', payload: error.response.data.message })
+    }
+}
+
+export const getOneUser = (id) => async (distpatch) => {
+    try {
+        distpatch({ type: 'ONE_USER_REQUEST' })
+        const { data } = await axios.get(`/admin/user/${id}`)
+        distpatch({ type: 'ONE_USER_SUCCESS', payload: data.user })
+    } catch (error) {
+        distpatch({ type: 'ONE_USER_FAIL', payload: error.response.data.message })
+    }
+}
+export const updateOneUser = () => {
+    try {
+        
+    } catch (error) {
+        
     }
 }

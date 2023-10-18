@@ -1,10 +1,11 @@
-import { Link, Pagination, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
+import { Grid, Link, Pagination, Paper, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
 import { Title } from '../../components/Title/Title';
-import { Fragment, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import Loader from '../../components/Loader/Loader';
 import { getAllUsers } from '../../redux/actions/userActions';
+import { Customers } from './Customers';
 
 export const CustomerTable = () => {
     const dispatch = useDispatch();
@@ -23,52 +24,50 @@ export const CustomerTable = () => {
     let count = filteredUsersCount;
     let countPages = Math.ceil(count / resultPerPage);
     return (
-        <Fragment>
-            <Title>Customers</Title>
-            {isFetching ? (
-                <Loader />
-            ) : (
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>Index</TableCell>
-                            <TableCell>Name</TableCell>
-                            <TableCell>Email</TableCell>
-                            <TableCell align="right">Role</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {users.map((user, index) => (
-                            <TableRow key={user._id}>
-                                <TableCell>{index + 1}</TableCell>
-                                <TableCell>
-                                    <Link color={'primary'}>{user.username}</Link>
-                                </TableCell>
-                                <TableCell>{user.email}</TableCell>
-                                <TableCell align="right">{user.role}</TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                    <Pagination
-                        count={countPages}
-                        page={currentPage}
-                        variant="outlined"
-                        color="primary"
-                        onChange={handlePageChange}
-                        sx={{ alignSelf: 'center', mt: 2 }}
-                    />
-                    {/* {resultPerPage < count && (
-                        <Pagination
-                            count={countPages}
-                            page={currentPage}
-                            variant="outlined"
-                            color="primary"
-                            onChange={handlePageChange}
-                            sx={{ alignSelf: 'center' }}
-                        />
-                    )} */}
-                </Table>
-            )}
-        </Fragment>
+        <Customers>
+            <Grid item xs={12}>
+                <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+                    <Title>Customers</Title>
+                    {isFetching ? (
+                        <Loader />
+                    ) : (
+                        <>
+                            <Table>
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell>Index</TableCell>
+                                        <TableCell>Name</TableCell>
+                                        <TableCell>Email</TableCell>
+                                        <TableCell align="right">Role</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {users.map((user, index) => (
+                                        <TableRow key={user._id}>
+                                            <TableCell>{index + 1}</TableCell>
+                                            <TableCell>
+                                                <Link color={'primary'} href={`/customer/${user._id}`}>
+                                                    {user.username}
+                                                </Link>
+                                            </TableCell>
+                                            <TableCell>{user.email}</TableCell>
+                                            <TableCell align="right">{user.role}</TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                            <Pagination
+                                count={countPages}
+                                page={currentPage}
+                                variant="outlined"
+                                color="primary"
+                                onChange={handlePageChange}
+                                sx={{ alignSelf: 'center', mt: 2 }}
+                            />
+                        </>
+                    )}
+                </Paper>
+            </Grid>
+        </Customers>
     );
 };
