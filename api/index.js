@@ -27,6 +27,7 @@ app.use('/api/users', userRoute);
 app.use('/api/product', productRoute);
 app.use('/api/order', orderRoute);
 app.use('/admin', adminRoute)
+app.use('/storage', express.static('storage'))
 
 // CORS
 app.use(async (req, res, next) => {

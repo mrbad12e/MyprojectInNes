@@ -4,9 +4,22 @@ import { useDispatch, useSelector } from 'react-redux';
 import Loader from '../../components/Loader/Loader';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { getOneUser } from '../../redux/actions/userActions';
-import { Box, FormControl, Grid, Input, InputAdornment, InputLabel, Paper, TextField, Typography } from '@mui/material';
-import {} from '@mui/icons-material';
+import { getOneUser, updateOneUser } from '../../redux/actions/userActions';
+import { Avatar, Badge, Button, Grid, Paper, TextField, Typography } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import { CameraAlt } from '@mui/icons-material';
+
+const VisuallyHiddenInput = styled('input')({
+    clip: 'rect(0 0 0 0)',
+    clipPath: 'inset(50%)',
+    height: 1,
+    overflow: 'hidden',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    whiteSpace: 'nowrap',
+    width: 1,
+});
 
 export const CustomerDetail = () => {
     const dispatch = useDispatch();
@@ -14,10 +27,37 @@ export const CustomerDetail = () => {
     const { user, isFetching, error } = useSelector((state) => state.oneUser);
     console.log(user);
 
+    const avatarLink = `${process.env.BACKEND_URL}/${user.avatar}`;
     const [name, setName] = useState(user.username);
     const [email, setEmail] = useState(user.email);
     const [role, setRole] = useState(user.role);
-    const handleSubmit = () => {};
+
+    const [avatar, setAvatar] = useState(avatarLink);
+    const [avatarPreview, setAvatarPreview] = useState(avatarLink);
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            // Read and display the selected image
+            setAvatar(file);
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                setAvatarPreview(event.target.result);
+            };
+            reader.readAsDataURL(file);
+        } else {
+            setAvatarPreview(null);
+        }
+    };
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        const myForm = new FormData();
+        myForm.set('type', 'avatar');
+        myForm.set('username', name);
+        myForm.set('email', email);
+        myForm.set('role', role);
+        myForm.set('avatar', avatar);
+        dispatch(updateOneUser(id, myForm));
+    };
 
     useEffect(() => {
         if (error) console.log(error);
@@ -31,41 +71,73 @@ export const CustomerDetail = () => {
                         p: 2,
                         display: 'flex',
                         flexDirection: 'column',
-                        m: 2
+                        m: 2,
                     }}
                 >
                     <Title>Customer Detail</Title>
                     {isFetching ? (
                         <Loader />
                     ) : (
-                        <Grid container columnSpacing={3}>
+                        <Grid container columnSpacing={3} rowGap={3}>
                             <Grid container spacing={3} alignItems={'center'}>
                                 <Grid item xs>
                                     <Typography align={'center'}>Username</Typography>
                                 </Grid>
-                                <Grid item xs={9} >
-                                    <TextField fullWidth value={name} variant="outlined" onChange={(e) => setName(e.target.value)} />
+                                <Grid item xs={9}>
+                                    <TextField
+                                        fullWidth
+                                        value={name}
+                                        variant="outlined"
+                                        onChange={(e) => setName(e.target.value)}
+                                    />
                                 </Grid>
                             </Grid>
                             <Grid container spacing={3} alignItems={'center'}>
                                 <Grid item xs>
                                     <Typography align={'center'}>Email</Typography>
                                 </Grid>
-                                <Grid item xs={9} >
-                                    <TextField fullWidth value={email} variant="outlined" onChange={(e) => setEmail(e.target.value)} />
+                                <Grid item xs={9}>
+                                    <TextField
+                                        fullWidth
+                                        value={email}
+                                        variant="outlined"
+                                        onChange={(e) => setEmail(e.target.value)}
+                                    />
                                 </Grid>
                             </Grid>
                             <Grid container spacing={3} alignItems={'center'}>
                                 <Grid item xs>
                                     <Typography align={'center'}>Role</Typography>
                                 </Grid>
-                                <Grid item xs={9} >
-                                    <TextField fullWidth value={role} variant="outlined" onChange={(e) => setRole(e.target.value)} />
+                                <Grid item xs={9}>
+                                    <TextField
+                                        fullWidth
+                                        value={role}
+                                        variant="outlined"
+                                        onChange={(e) => setRole(e.target.value)}
+                                    />
                                 </Grid>
                             </Grid>
                         </Grid>
                     )}
                 </Paper>
+            </Grid>
+            <Grid item md={4}>
+                <Paper sx={{ p: 2, m: 2, display: 'flex', alignItems: 'center' }}>
+                    <Grid container justifyContent={'center'}>
+                        <Badge badgeContent={<CameraAlt />} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
+                            <Button component="label" sx={{ '&:hover': { background: 'inherit' } }}>
+                                <Avatar src={avatarPreview} sx={{ width: 256, height: 256 }} />
+                                <VisuallyHiddenInput type="file" onChange={handleFileChange} />
+                            </Button>
+                        </Badge>
+                    </Grid>
+                </Paper>
+            </Grid>
+            <Grid container justifyContent={'center'} sx={{ flexGrow: 1 }}>
+                <Grid item>
+                    <Button variant='contained' onClick={handleSubmit}>Submit Changes</Button>
+                </Grid>
             </Grid>
         </Customers>
     );

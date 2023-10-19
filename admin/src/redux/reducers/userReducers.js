@@ -48,20 +48,20 @@ export const userReducers = (state = { user: {} }, action) => {
 
 export const profileReducer = (state = {}, action) => {
     switch (action.type) {
-        case 'ADD_PROFILE_REQUEST':
+        case 'UPDATE_USER_REQUEST':
         case 'UPDATE_PASSWORD_REQUEST':
             return {
                 ...state,
                 isFetching: true,
             };
-        case 'ADD_PROFILE_SUCCESS':
+        case 'UPDATE_USER_SUCCESS':
         case 'UPDATE_PASSWORD_SUCCESS':
             return {
                 ...state,
                 isFetching: false,
                 isUpdated: action.payload,
             };
-        case 'ADD_PROFILE_FAIL':
+        case 'UPDATE_USER_FAIL':
         case 'UPDATE_PASSWORD_FAIL':
             return {
                 ...state,

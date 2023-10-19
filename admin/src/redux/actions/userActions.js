@@ -76,10 +76,15 @@ export const getOneUser = (id) => async (distpatch) => {
         distpatch({ type: 'ONE_USER_FAIL', payload: error.response.data.message })
     }
 }
-export const updateOneUser = () => {
+export const updateOneUser = (id, form) => async (dispatch) => {
     try {
-        
+        dispatch({ type: 'UPDATE_USER_REQUEST' })
+        const config = { headers: { 'Content-Type': 'multipart/form-data' } };
+        const { data } = await axios.put(`/admin/user/${id}`, form , { config });
+        console.log(data);
+        dispatch({ type: 'UPDATE_USER_SUCCESS', payload: data.user })
     } catch (error) {
-        
+        dispatch({ type: 'UPDATE_USER_FAIL', payload: error.response.data.message })
+        console.log(error);
     }
 }

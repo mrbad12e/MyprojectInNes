@@ -342,13 +342,13 @@ exports.getAllUsers = async (req, res, next) => {
     });
 };
 
-exports.updateUserRole = async (req, res, next) => {
+exports.updateUser = async (req, res, next) => {
     const newUserData = {
         username: req.body.username,
         email: req.body.email,
         role: req.body.role,
+        avatar: req.file.path
     };
-
     const user = await User.findByIdAndUpdate(req.params.id, newUserData, {
         new: true,
         runValidators: true,

@@ -3,7 +3,7 @@ import { Box, CssBaseline, Toolbar, Container, Grid } from '@mui/material';
 
 const defaultTheme = createTheme();
 
-export const Customers = ({ children }) => {
+export const Products = ({ children }) => {
     return (
         <ThemeProvider theme={defaultTheme}>
             <Box sx={{ display: 'flex' }}>
