@@ -4,6 +4,7 @@ import storage from 'redux-persist/lib/storage'
 import thunk from 'redux-thunk'
 import { userReducers, profileReducer, forgotPasswordReducer, allUsersReducers, userActionReducer } from './reducers/userReducers'
 import { recentOrderReducers } from './reducers/orderReducers'
+import { productDetailReducer, productsReducer } from './reducers/productReducers'
 
 const persistConfig = {
     key: 'root', version: 1, storage
@@ -17,6 +18,9 @@ const rootReducer = combineReducers({
     oneUser: userActionReducer,
 
     recentOrders: recentOrderReducers,
+
+    products: productsReducer,
+    productDetail: productDetailReducer,
 })
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)

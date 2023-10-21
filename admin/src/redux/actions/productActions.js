@@ -6,7 +6,7 @@ export const getProduct =
         try {
             dispatch({ type: 'ALL_PRODUCT_REQUEST' });
             // let link = '/api/product/products'
-            let link = `/admin/product/products?keyword=${keyword}&page=${currentPage}`;
+            let link = `/admin/products?keyword=${keyword}&page=${currentPage}`;
             const { data } = await axios.get(link);
             dispatch({
                 type: 'ALL_PRODUCT_SUCCESS',
@@ -22,7 +22,7 @@ export const getProduct =
 export const getProductDetail = (id) => async (dispatch) => {
     try {
         dispatch({ type: 'PRODUCT_DETAIL_REQUEST' })
-        const { data } = await axios.get(`/api/product/product/${id}`)
+        const { data } = await axios.get(`/admin/product/${id}`)
         dispatch({
             type: 'PRODUCT_DETAIL_SUCCESS',
             payload: data.product

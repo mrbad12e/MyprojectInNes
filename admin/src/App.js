@@ -7,6 +7,8 @@ import { Dashboard } from './pages/Dashboard/Dashboard';
 import { Navbar } from './components/Navbar/Navbar';
 import { CustomerTable } from './pages/Customers/CustomerTable';
 import { CustomerDetail } from './pages/Customers/CustomerDetail';
+import { ProductTable } from './pages/Product/ProductTable';
+import { ProductDetail } from './pages/Product/ProductDetail';
 
 
 export const App = () => {
@@ -23,6 +25,8 @@ export const App = () => {
                 <Route path='/dashboard' element={<Dashboard/>}/>
                 <Route path='/customers' element={<CustomerTable/>}/>
                 <Route path='/customer/:id' element={<CustomerDetail/>}/>
+                <Route path='/products' element={<ProductTable/>}/>
+                <Route path='/product/:id' element={<ProductDetail/>}/>
             </Routes>
         </BrowserRouter>
     )

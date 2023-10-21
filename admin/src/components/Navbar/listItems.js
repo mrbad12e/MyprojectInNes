@@ -1,5 +1,5 @@
 import { ListItemButton, ListItemIcon, ListItemText, ListSubheader } from '@mui/material';
-import { Dashboard, ShoppingCart, People, BarChart, Layers, Assignment } from '@mui/icons-material';
+import { Dashboard, ShoppingCart, People, Layers, Assignment, Inventory } from '@mui/icons-material';
 import { Fragment } from 'react';
 
 export const mainListItems = (
@@ -22,11 +22,11 @@ export const mainListItems = (
             </ListItemIcon>
             <ListItemText primary="Customers" />
         </ListItemButton>
-        <ListItemButton>
+        <ListItemButton href='/products'>
             <ListItemIcon>
-                <BarChart />
+                <Inventory/>
             </ListItemIcon>
-            <ListItemText primary="Reports" />
+            <ListItemText primary="Products" />
         </ListItemButton>
         <ListItemButton>
             <ListItemIcon>

@@ -2,7 +2,10 @@ const Product = require("../models/Product")
 const ApiFeatures = require("../utils/apifeatures")
 
 exports.getAllProducts = async (req, res, next) => {
-    const resultPerPage = Number(process.env.RESULT_PER_PAGE)
+    let resultPerPage = Number(process.env.RESULT_PER_PAGE)
+    if (req.originalUrl.startsWith('/admin')) {
+        resultPerPage = Number(process.env.ADMIN_RESULT_PER_PAGE)
+    }
     const productsCount = await Product.countDocuments()
     const apiFeature = new ApiFeatures(Product.find(), req.query)
         .search()

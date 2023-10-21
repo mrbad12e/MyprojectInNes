@@ -4,6 +4,7 @@ const { getRecentOrders, getAllOrders, updateOrder, deleteOrder } = require('../
 
 const {isAuthUser, authRoles} = require('../middleware/auth')
 const uploadFile = require('../utils/uploadFile')
+const { getAllProducts, getProductDetail } = require('../controllers/product')
 
 
 router.route('/login').post(loginAdmin)
@@ -17,6 +18,9 @@ router
     .get(isAuthUser, authRoles('admin'), getSingleUser)
     .put(isAuthUser, uploadFile.single('avatar'), authRoles('admin'), updateUser)
     .delete(isAuthUser, authRoles('admin'), deleteUser)
+
+router.route('/products').get(getAllProducts)
+router.route('/product/:id').get(getProductDetail)
 
 router.route('/order/recent').get(isAuthUser, authRoles("admin"), getRecentOrders)
 router.route('/order/all').get(isAuthUser, authRoles('admin'), getAllOrders)
