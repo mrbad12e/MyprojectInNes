@@ -5,12 +5,21 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Button, Grid, Paper, TextField, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { CameraAlt, Remove } from '@mui/icons-material';
+import { CameraAlt, RemoveCircle } from '@mui/icons-material';
 import { Products } from './Products';
-import { getProductDetail } from '../../redux/actions/productActions';
+import { getProductDetail, updateProduct } from '../../redux/actions/productActions';
 import { InputTags } from '../../components/Tag/InputTags';
 import { ImgList } from '../../components/Image/List';
 import { VisuallyHiddenInput } from '../../components/VisuallyHiddenInput';
+
+const myForm = new FormData()
+
+function addArray(data, field) {
+    if (data.length <= 0) myForm.set(`${field}`, [])
+    data.forEach((vdata, index) => {
+        myForm.append(`${field}[${index}]`, vdata)
+    });
+}
 
 export const ProductDetail = () => {
     const dispatch = useDispatch();
@@ -69,15 +78,23 @@ export const ProductDetail = () => {
     };
     const handleRemoveImage = (index) => {
         const newImages = [...previewImages];
-        newImages.slice(index, 1);
+        newImages.splice(index, 1);
         setPreviewImages(newImages);
         setImages(newImages);
     };
     const handleSubmit = (e) => {
         e.preventDefault();
-        const myForm = new FormData();
+        myForm.set('type', 'product');
+        myForm.set('title', name)
+        myForm.set('descrip', descrip)
+        myForm.set('Stock', stock)
+        addArray(images, 'images')
+        addArray(categories, 'categories')
+        addArray(sizes, 'size')
+        addArray(colors, 'color')
+        dispatch(updateProduct(id, myForm))
     };
-    console.log(previewImages);
+    
     return (
         <Products>
             <Grid item md={8}>
@@ -173,7 +190,7 @@ export const ProductDetail = () => {
                         <Loader />
                     ) : (
                         <Grid container justifyContent={'center'}>
-                            <ImgList images={previewImages} deleteFunc={handleRemoveImage} element={<Remove />} />
+                            <ImgList images={previewImages} deleteFunc={handleRemoveImage} element={<RemoveCircle />} />
                             <Grid container>
                                 <Grid item justifyContent={'center'}>
                                     <Button component="label" variant="contained" startIcon={<CameraAlt />}>

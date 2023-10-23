@@ -34,3 +34,14 @@ export const getProductDetail = (id) => async (dispatch) => {
         });
     }
 };
+
+export const updateProduct = (id, form) => async (dispatch) => {
+    try {
+        dispatch({ type: 'UPDATE_PRODUCT_REQUEST' })
+        const config = { headers: { 'Content-Type': 'multipart/form-data' } };
+        const { data } = await axios.put(`/admin/product/${id}`, form, { config })
+        dispatch({ type: 'UPDATE_PRODUCT_SUCCESS', payload: data.updatedProduct })
+    } catch (error) {
+        dispatch({ type: 'UPDATE_PRODUCT_FAIL', payload: error.response.data.message })
+    }
+}

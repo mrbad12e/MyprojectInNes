@@ -1,5 +1,4 @@
 import { Badge, Grid, IconButton, ImageList, ImageListItem, ImageListItemBar } from '@mui/material';
-import { VisuallyHiddenInput } from '../VisuallyHiddenInput';
 
 export const ImgList = ({ images, element, title, deleteFunc }) => {
     return (
@@ -17,9 +16,8 @@ export const ImgList = ({ images, element, title, deleteFunc }) => {
                             title={title}
                             position="top"
                             actionIcon={
-                                <IconButton>
+                                <IconButton onClick={() => deleteFunc(index)}>
                                     {element}
-                                    <VisuallyHiddenInput type='file' onChange={deleteFunc}/>
                                 </IconButton>
                             }
                         />
