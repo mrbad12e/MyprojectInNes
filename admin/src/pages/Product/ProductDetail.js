@@ -2,11 +2,11 @@ import { Title } from '../../components/Title/Title';
 import { useDispatch, useSelector } from 'react-redux';
 import Loader from '../../components/Loader/Loader';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Button, Grid, Paper, TextField, Typography } from '@mui/material';
 import { CameraAlt, RemoveCircle } from '@mui/icons-material';
 import { Products } from './Products';
-import { getProductDetail, updateProduct } from '../../redux/actions/productActions';
+import { deleteProduct, getProductDetail, updateProduct } from '../../redux/actions/productActions';
 import { InputTags } from '../../components/Tag/InputTags';
 import { ImgList } from '../../components/Image/List';
 import { VisuallyHiddenInput } from '../../components/VisuallyHiddenInput';
@@ -22,6 +22,8 @@ function addArray(data, field) {
 
 export const ProductDetail = () => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const backend_url = process.env.BACKEND_URL;
     const { id } = useParams();
     const { product, isFetching, error } = useSelector((state) => state.productDetail);
 
@@ -50,9 +52,11 @@ export const ProductDetail = () => {
             setColors(product.color);
             setSizes(product.size);
             setImages(product.img);
-            setPreviewImages(product.img);
+            setPreviewImages(() => {
+                return product.img.map((image_url) => backend_url + '/' + image_url);
+            });
         }
-    }, [product]);
+    }, [product, backend_url]);
     const handleCatChange = (e, newValue) => {
         if (newValue !== undefined) {
             setCategories(newValue);
@@ -69,7 +73,6 @@ export const ProductDetail = () => {
         } else setSizes([]);
     };
     const handleAddImage = (e) => {
-        // const newPreviewImages = [...previewImages]
         const file = e.target.files[0];
         if (file) {
             setImages([...images, file]);
@@ -99,6 +102,11 @@ export const ProductDetail = () => {
         dispatch(updateProduct(id, myForm));
     };
 
+    const handleDelete = (e) => {
+        e.preventDefault();
+        dispatch(deleteProduct(id));
+        navigate('/products');
+    };
     return (
         <Products>
             <Grid item md={8}>
@@ -220,10 +228,15 @@ export const ProductDetail = () => {
                     )}
                 </Paper>
             </Grid>
-            <Grid container justifyContent={'center'} sx={{ flexGrow: 1 }}>
+            <Grid container justifyContent={'space-evenly'} sx={{ flexGrow: 1 }}>
                 <Grid item>
                     <Button variant="contained" onClick={handleSubmit}>
                         Submit Changes
+                    </Button>
+                </Grid>
+                <Grid item>
+                    <Button variant="contained" onClick={handleDelete} color="error">
+                        Delete
                     </Button>
                 </Grid>
             </Grid>

@@ -1,4 +1,4 @@
-import { Badge, Grid, IconButton, ImageList, ImageListItem, ImageListItemBar } from '@mui/material';
+import { Grid, IconButton, ImageList, ImageListItem, ImageListItemBar } from '@mui/material';
 
 export const ImgList = ({ images, element, title, deleteFunc }) => {
     return (

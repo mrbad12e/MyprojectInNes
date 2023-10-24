@@ -56,3 +56,13 @@ export const createProduct = (form) => async (dispatch) => {
         dispatch({ type: 'CREATE_PRODUCT_FAIL', payload: error.response.data.message })
     }
 }
+
+export const deleteProduct = (id) => async (dispatch) => {
+    try {
+        dispatch({ type: 'DELETE_PRODUCT_REQUEST' })
+        const { data } = await axios.delete(`/admin/product/${id}`)
+        dispatch({ type: 'DELETE_PRODUCT_SUCCESS', payload: data })
+    } catch (error) {
+        dispatch({ type: 'DELETE_PRODUCT_FAIL', payload: error.response.data.message })
+    }
+}
