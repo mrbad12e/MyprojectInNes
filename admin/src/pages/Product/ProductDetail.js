@@ -15,7 +15,7 @@ const myForm = new FormData();
 
 function addArray(data, field) {
     if (data.length <= 0) myForm.set(`${field}`, []);
-    data.forEach((vdata) => {
+    data.map((vdata) => {
         myForm.append(`${field}`, vdata);
     });
 }
@@ -53,7 +53,7 @@ export const ProductDetail = () => {
             setSizes(product.size);
             setImages(product.img);
             setPreviewImages(() => {
-                return product.img.map((image_url) => backend_url + '/' + image_url);
+                return product.img.map((image_url) => `${backend_url}/${image_url.replace(/\\/g, '/')}`);
             });
         }
     }, [product, backend_url]);
@@ -100,6 +100,7 @@ export const ProductDetail = () => {
         addArray(sizes, 'size');
         addArray(colors, 'color');
         dispatch(updateProduct(id, myForm));
+        navigate('/products');
     };
 
     const handleDelete = (e) => {

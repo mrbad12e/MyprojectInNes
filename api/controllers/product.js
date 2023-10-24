@@ -162,7 +162,7 @@ exports.updateProduct = async (req, res, next) => {
         });
     }
     const files = req.files.map((file) => file.path);
-    const uniqueImg = [...new Set([...files])];
+    const uniqueImg = [...new Set([...product.img, ...files])];
     const uniqueCategories = [...new Set([...req.body.categories])];
     const uniqueSize = [...new Set([...req.body.size])];
     const uniqueColor = [...new Set([...req.body.color])];

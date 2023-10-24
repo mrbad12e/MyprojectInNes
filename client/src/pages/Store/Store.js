@@ -72,12 +72,13 @@ const Store = () => {
                         />
                         <Typography>Categories</Typography>
                         <RadioGroup defaultValue={category}>
-                            {categories.map((category) => (
+                            {categories.map((category, index) => (
                                 <FormControlLabel 
                                     value={category}
                                     control={<Radio/>}
                                     label={category.charAt(0).toUpperCase() + category.slice(1)}
                                     onClick={(e) => setvCategory(category)}
+                                    key={index}
                                 />
                             ))}
                         </RadioGroup>

@@ -62,6 +62,7 @@ const Button = styled.button`
 `;
 
 const Product = () => {
+    const backend_url = process.env.BACKEND_URL
     const { id } = useParams();
     const dispatch = useDispatch();
 
@@ -100,7 +101,7 @@ const Product = () => {
                             <ImageList cols={1} sx={{ flex: '1' }}>
                                 {product.img.slice(0, 2).map((img) => (
                                     <ImageListItem key={img}>
-                                        <img src={img} alt="" />
+                                        <img src={`${backend_url}/${img.replace(/\\/g, '/')}`} alt="" />
                                     </ImageListItem>
                                 ))}
                             </ImageList>

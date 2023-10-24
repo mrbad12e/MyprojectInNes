@@ -22,9 +22,10 @@ const cardWidthCSS = () => {
     else return '31%'
 }
 const Product = ({ item }) => {
+    const backend_url = process.env.BACKEND_URL
     return (
         <Card sx={{ width: cardWidthCSS, position: 'relative', margin: '8px' }}>
-            <CardMedia component="img" image={item.img[0]} sx={{ zIndex: 2 }}/>
+            <CardMedia component="img" image={`${backend_url}/${item.img[0].replace(/\\/g, '/')}`} sx={{ zIndex: 2 }}/>
             
             <CardContent sx={ContentCSS}>
                 <div className='product-icon'>

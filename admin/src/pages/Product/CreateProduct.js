@@ -9,6 +9,7 @@ import { CameraAlt, RemoveCircle } from "@mui/icons-material";
 import { createProduct } from "../../redux/actions/productActions";
 import { Title } from "../../components/Title/Title";
 import Loader from "../../components/Loader/Loader";
+import { useNavigate } from "react-router-dom";
 
 const myForm = new FormData()
 
@@ -20,6 +21,7 @@ function addArray(data, field) {
 }
 
 export const CreateProduct = () => {
+    const navigate = useNavigate()
     const dispatch = useDispatch()
     const { isFetching, error, success } = useSelector((state)=> state.newProduct)
 
@@ -82,6 +84,7 @@ export const CreateProduct = () => {
         addArray(sizes, 'size');
         addArray(colors, 'color');
         dispatch(createProduct(myForm));
+        navigate('/products')
     };
     return (
         <Products>
@@ -207,7 +210,7 @@ export const CreateProduct = () => {
             <Grid container justifyContent={'center'} sx={{ flexGrow: 1 }}>
                 <Grid item>
                     <Button variant="contained" onClick={handleSubmit}>
-                        Submit Changes
+                        Submit
                     </Button>
                 </Grid>
             </Grid>

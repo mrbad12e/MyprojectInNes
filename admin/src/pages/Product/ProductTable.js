@@ -43,7 +43,7 @@ export const ProductTable = () => {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {products.map((product, index) => (
+                                    {products ?.map((product, index) => (
                                         <TableRow key={product._id}>
                                             <TableCell>{index + 1}</TableCell>
                                             <TableCell>
