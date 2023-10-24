@@ -9,6 +9,7 @@ import { CustomerTable } from './pages/Customers/CustomerTable';
 import { CustomerDetail } from './pages/Customers/CustomerDetail';
 import { ProductTable } from './pages/Product/ProductTable';
 import { ProductDetail } from './pages/Product/ProductDetail';
+import { CreateProduct } from './pages/Product/CreateProduct';
 
 
 export const App = () => {
@@ -27,6 +28,7 @@ export const App = () => {
                 <Route path='/customer/:id' element={<CustomerDetail/>}/>
                 <Route path='/products' element={<ProductTable/>}/>
                 <Route path='/product/:id' element={<ProductDetail/>}/>
+                <Route path='/product/create' element={<CreateProduct/>}/>
             </Routes>
         </BrowserRouter>
     )

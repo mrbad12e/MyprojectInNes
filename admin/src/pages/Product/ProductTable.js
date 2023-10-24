@@ -1,11 +1,12 @@
-import { Grid, Link, Pagination, Paper, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
+import { Button, Grid, Link, Pagination, Paper, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
 import { Title } from '../../components/Title/Title';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import Loader from '../../components/Loader/Loader';
-import { Products } from './Products'
+import { Products } from './Products';
 import { getProduct } from '../../redux/actions/productActions';
+import { Add } from '@mui/icons-material';
 export const ProductTable = () => {
     const dispatch = useDispatch();
     const { keyword } = useParams();
@@ -26,7 +27,10 @@ export const ProductTable = () => {
         <Products>
             <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                    <Title>Products</Title>
+                    <Grid item display={'flex'} flexDirection={'row'} justifyContent={'space-between'}>
+                        <Title>Products</Title>
+                        <Button variant='contained' color='error' href='/product/create'>Add product<Add/></Button>
+                    </Grid>
                     {isFetching ? (
                         <Loader />
                     ) : (
@@ -36,7 +40,6 @@ export const ProductTable = () => {
                                     <TableRow>
                                         <TableCell>Index</TableCell>
                                         <TableCell>Title</TableCell>
-                                        
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
@@ -48,7 +51,6 @@ export const ProductTable = () => {
                                                     {product.title}
                                                 </Link>
                                             </TableCell>
-                                            
                                         </TableRow>
                                     ))}
                                 </TableBody>

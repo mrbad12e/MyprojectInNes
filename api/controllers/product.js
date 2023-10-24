@@ -122,11 +122,39 @@ exports.getAdminProducts = async (req, res, next) => {
     });
 };
 
-exports.createProduct = async (req, res, next) => {};
+exports.createProduct = async (req, res, next) => {
+    const files = req.files.map((file) => file.path);
+    const uniqueImg = [...new Set([...files])];
+    const uniqueCategories = [...new Set([...req.body.categories])];
+    const uniqueSize = [...new Set([...req.body.size])];
+    const uniqueColor = [...new Set([...req.body.color])];
+    const newProductData = {
+        title: req.body.title,
+        descrip: req.body.descrip,
+        Stock: req.body.Stock,
+        price: req.body.price,
+        img: uniqueImg,
+        categories: uniqueCategories,
+        size: uniqueSize,
+        color: uniqueColor,
+    };
+
+    const product = new Product(newProductData)
+    product.save()
+    if (!product) {
+        res.status(400).json({
+            success: false,
+            message: 'Create product fail'
+        })
+    }
+
+    res.status(200).json({
+        success: true, product
+    })
+};
 
 exports.updateProduct = async (req, res, next) => {
     const product = await Product.findById(req.params.id);
-    console.log(req.body);
     if (!product) {
         res.status(404).json({
             success: false,
@@ -138,7 +166,7 @@ exports.updateProduct = async (req, res, next) => {
     const uniqueCategories = [...new Set([...req.body.categories])];
     const uniqueSize = [...new Set([...req.body.size])];
     const uniqueColor = [...new Set([...req.body.color])];
-    console.log(files);
+    // console.log(files);
     const newProductData = {
         title: req.body.title,
         descrip: req.body.descrip,

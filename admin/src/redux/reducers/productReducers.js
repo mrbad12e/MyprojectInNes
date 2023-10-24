@@ -31,3 +31,26 @@ export const productDetailReducer = (state = { product: {} }, action) => {
             return state
     }
 }
+
+export const newProduct = (state = { product: {} }, action) => {
+    switch (action.type) {
+        case 'CREATE_PRODUCT_REQUEST':
+            return {...state, isFetching: true,};
+        case 'CREATE_PRODUCT_SUCCESS':
+            return {
+                isFetching: false,
+                success: action.payload.success,
+                product: action.payload.product,
+            };
+        case 'CREATE_PRODUCT_FAIL':
+            return {
+                ...state,
+                loading: false,
+                error: action.payload,
+            };
+        case 'CREATE_PRODUCT_RESET':
+            return {...state, success: false};
+        default:
+            return state;
+    }
+}

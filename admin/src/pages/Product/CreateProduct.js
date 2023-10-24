@@ -1,58 +1,44 @@
-import { Title } from '../../components/Title/Title';
-import { useDispatch, useSelector } from 'react-redux';
-import Loader from '../../components/Loader/Loader';
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { Button, Grid, Paper, TextField, Typography } from '@mui/material';
-import { CameraAlt, RemoveCircle } from '@mui/icons-material';
-import { Products } from './Products';
-import { getProductDetail, updateProduct } from '../../redux/actions/productActions';
-import { InputTags } from '../../components/Tag/InputTags';
-import { ImgList } from '../../components/Image/List';
-import { VisuallyHiddenInput } from '../../components/VisuallyHiddenInput';
+import { useDispatch, useSelector } from "react-redux";
+import { Products } from "./Products";
+import { useEffect, useState } from "react";
+import { Button, Grid, Paper, TextField, Typography } from "@mui/material";
+import { InputTags } from "../../components/Tag/InputTags";
+import { ImgList } from "../../components/Image/List";
+import { VisuallyHiddenInput } from "../../components/VisuallyHiddenInput";
+import { CameraAlt, RemoveCircle } from "@mui/icons-material";
+import { createProduct } from "../../redux/actions/productActions";
+import { Title } from "../../components/Title/Title";
+import Loader from "../../components/Loader/Loader";
 
-const myForm = new FormData();
+const myForm = new FormData()
 
 function addArray(data, field) {
-    if (data.length <= 0) myForm.set(`${field}`, []);
+    if (data.length <= 0) myForm.set(`${field}`, [])
     data.forEach((vdata) => {
-        myForm.append(`${field}`, vdata);
+        myForm.append(`${field}`, vdata)
     });
 }
 
-export const ProductDetail = () => {
-    const dispatch = useDispatch();
-    const { id } = useParams();
-    const { product, isFetching, error } = useSelector((state) => state.productDetail);
+export const CreateProduct = () => {
+    const dispatch = useDispatch()
+    const { isFetching, error, success } = useSelector((state)=> state.newProduct)
 
     const [name, setName] = useState('');
     const [stock, setStock] = useState(0);
     const [descrip, setDescrip] = useState('');
-    const [price, setPrice] = useState(0);
+    const [price, setPrice] = useState(0)
     const [categories, setCategories] = useState([]);
     const [colors, setColors] = useState([]);
     const [sizes, setSizes] = useState([]);
 
     const [images, setImages] = useState([]);
     const [previewImages, setPreviewImages] = useState([]);
-    useEffect(() => {
-        if (error) console.log(error);
-        dispatch(getProductDetail(id));
-    }, [dispatch, error, id]);
 
     useEffect(() => {
-        if (product) {
-            setCategories(product.categories);
-            setName(product.title);
-            setStock(product.Stock);
-            setDescrip(product.descrip);
-            setPrice(product.price);
-            setColors(product.color);
-            setSizes(product.size);
-            setImages(product.img);
-            setPreviewImages(product.img);
-        }
-    }, [product]);
+        if (error) console.log(error)
+        if (success) dispatch({ type: 'CREATE_PRODUCT_RESET' })
+    }, [dispatch, error, success])
+
     const handleCatChange = (e, newValue) => {
         if (newValue !== undefined) {
             setCategories(newValue);
@@ -69,7 +55,6 @@ export const ProductDetail = () => {
         } else setSizes([]);
     };
     const handleAddImage = (e) => {
-        // const newPreviewImages = [...previewImages]
         const file = e.target.files[0];
         if (file) {
             setImages([...images, file]);
@@ -78,9 +63,9 @@ export const ProductDetail = () => {
         }
     };
     const handleRemoveImage = (index) => {
-        const newPreviewImages = [...previewImages];
+        const newPreviewImages = [...previewImages]
         const newImages = [...images];
-        newPreviewImages.splice(index, 1);
+        newPreviewImages.splice(index, 1)
         newImages.splice(index, 1);
         setPreviewImages(newPreviewImages);
         setImages(newImages);
@@ -96,9 +81,8 @@ export const ProductDetail = () => {
         addArray(categories, 'categories');
         addArray(sizes, 'size');
         addArray(colors, 'color');
-        dispatch(updateProduct(id, myForm));
+        dispatch(createProduct(myForm));
     };
-
     return (
         <Products>
             <Grid item md={8}>
@@ -228,5 +212,5 @@ export const ProductDetail = () => {
                 </Grid>
             </Grid>
         </Products>
-    );
-};
+    )
+}

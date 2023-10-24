@@ -45,3 +45,14 @@ export const updateProduct = (id, form) => async (dispatch) => {
         dispatch({ type: 'UPDATE_PRODUCT_FAIL', payload: error.response.data.message })
     }
 }
+
+export const createProduct = (form) => async (dispatch) => {
+    try {
+        dispatch({ type: 'CREATE_PRODUCT_REQUEST' })
+        const config = { headers: { 'Content-Type': 'multipart/form-data' } };
+        const { data } = await axios.post('/admin/product/create', form, { config })
+        dispatch({ type: 'CREATE_PRODUCT_SUCCESS', payload: data })
+    } catch (error) {
+        dispatch({ type: 'CREATE_PRODUCT_FAIL', payload: error.response.data.message })
+    }
+}
