@@ -114,14 +114,6 @@ exports.deleteReview = async (req, res, next) => {
 };
 
 // admin
-exports.getAdminProducts = async (req, res, next) => {
-    const products = await Product.find();
-    res.status(200).json({
-        success: true,
-        products,
-    });
-};
-
 exports.createProduct = async (req, res, next) => {
     const files = req.files.map((file) => file.path);
     const uniqueImg = [...new Set([...files])];

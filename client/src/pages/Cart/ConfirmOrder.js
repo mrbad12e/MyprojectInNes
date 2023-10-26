@@ -8,7 +8,7 @@ const ConfirmOrder = () => {
     const { shippingInfo, cartItems } = useSelector((state) => state.cart);
     const user = useSelector((state) => state.user.currentUser);
     const navigate = useNavigate();
-    const dispatch = useDispatch();
+    const backend_url = process.env.BACKEND_URL
 
     const subtotal = cartItems.reduce((acc, item) => acc + item.quantity * item.price, 0);
 
@@ -52,9 +52,11 @@ const ConfirmOrder = () => {
                         <Typography variant="h5">Your Cart Items:</Typography>
 
                         {cartItems &&
-                            cartItems.map((item) => (
+                            cartItems.map((item) => {
+                                const srcSet = `${backend_url}/${item.img.replace(/\\/g, '/')}`
+                                return (
                                 <Box key={item.product} display={'flex'} flex={1} my={1}>
-                                    <img alt="Product" srcSet={`${item.img}?w=32&fit=crop&auto=format&dpr=2 4x`} />
+                                    <img alt="Product" srcSet={`${srcSet}?w=32&fit=crop&auto=format&dpr=2 4x`} />
                                     <Box
                                         p={1}
                                         display={'inline-flex'}
@@ -69,7 +71,7 @@ const ConfirmOrder = () => {
                                         </Typography>
                                     </Box>
                                 </Box>
-                            ))}
+                            )})}
                     </Box>
                 </Container>
                 {/*  */}

@@ -1,35 +1,69 @@
-import { Link, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
+import { Grid, Link, Pagination, Paper, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
 import { Title } from '../../components/Title/Title';
-import { Fragment, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
+import Loader from '../../components/Loader/Loader';
+import { Orders } from './Orders'
+import { getAllOrders } from '../../redux/actions/orderActions';
 
 export const OrderTable = () => {
-    const { users } = useSelector((state) => state.allUsers);
+    const dispatch = useDispatch();
+    const { keyword } = useParams();
+    const [currentPage, setCurrentPage] = useState(1);
+
+    const { orders, isFetching, error, resultPerPage, filteredOrdersCount } = useSelector((state) => state.allOrders)
+    const handlePageChange = (e, p) => setCurrentPage(p);
+    useEffect(() => {
+        if (error) console.log(error);
+        dispatch(getAllOrders(keyword, currentPage));
+    }, [dispatch, keyword, currentPage, error]);
+
+    let count = filteredOrdersCount;
+    let countPages = Math.ceil(count / resultPerPage);
     return (
-        <Fragment>
-            <Title>Orders</Title>
-            <Table>
-                <TableHead>
-                    <TableRow>
-                        <TableCell>Index</TableCell>
-                        <TableCell>Name</TableCell>
-                        <TableCell>Email</TableCell>
-                        <TableCell align="right">Role</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {users?.map((user, index) => (
-                        <TableRow key={user._id}>
-                            <TableCell>{index + 1}</TableCell>
-                            <TableCell>
-                                <Link color={'primary'}>{user.username}</Link>
-                            </TableCell>
-                            <TableCell>{user.email}</TableCell>
-                            <TableCell align="right">{user.role}</TableCell>
-                        </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
-        </Fragment>
+        <Orders>
+            <Grid item xs={12}>
+                <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+                    <Grid item display={'flex'} flexDirection={'row'} justifyContent={'space-between'}>
+                        <Title>Orders</Title>
+                    </Grid>
+                    {isFetching ? (
+                        <Loader />
+                    ) : (
+                        <>
+                            <Table>
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell>Index</TableCell>
+                                        <TableCell>Title</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {orders ?.map((order, index) => (
+                                        <TableRow key={order._id}>
+                                            <TableCell>{index + 1}</TableCell>
+                                            <TableCell>
+                                                <Link color={'primary'}>
+                                                    {order._id}
+                                                </Link>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                            <Pagination
+                                count={countPages}
+                                page={currentPage}
+                                variant="outlined"
+                                color="primary"
+                                onChange={handlePageChange}
+                                sx={{ alignSelf: 'center', mt: 2 }}
+                            />
+                        </>
+                    )}
+                </Paper>
+            </Grid>
+        </Orders>
     );
 };

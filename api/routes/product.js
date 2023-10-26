@@ -18,7 +18,4 @@ router
     .get(getProductReviews)
     .delete(isAuthUser, deleteReview)
 
-router
-    .route('/admin/products')
-    .get(isAuthUser, authRoles('admin'), getAdminProducts)
 module.exports = router;

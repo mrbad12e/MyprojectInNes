@@ -10,6 +10,7 @@ import { CustomerDetail } from './pages/Customers/CustomerDetail';
 import { ProductTable } from './pages/Product/ProductTable';
 import { ProductDetail } from './pages/Product/ProductDetail';
 import { CreateProduct } from './pages/Product/CreateProduct';
+import { OrderTable } from './pages/Orders/OrderTable';
 
 
 export const App = () => {
@@ -29,6 +30,7 @@ export const App = () => {
                 <Route path='/products' element={<ProductTable/>}/>
                 <Route path='/product/:id' element={<ProductDetail/>}/>
                 <Route path='/product/create' element={<CreateProduct/>}/>
+                <Route path='/orders' element={<OrderTable/>} />
             </Routes>
         </BrowserRouter>
     )

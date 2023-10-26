@@ -10,7 +10,7 @@ export const mainListItems = (
             </ListItemIcon>
             <ListItemText primary="Dashboard" />
         </ListItemButton>
-        <ListItemButton>
+        <ListItemButton href='/orders'>
             <ListItemIcon>
                 <ShoppingCart />
             </ListItemIcon>

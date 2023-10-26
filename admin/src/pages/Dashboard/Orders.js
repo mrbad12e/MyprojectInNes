@@ -30,7 +30,7 @@ export const Orders = () => {
                     ))}
                 </TableBody>
             </Table>
-            <Link color={'primary'} sx={{ mt: 3 }}>See more orders</Link>
+            <Link color={'primary'} sx={{ mt: 3 }} href='/orders'>See more orders</Link>
         </Fragment>
     );
 };

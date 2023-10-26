@@ -27,7 +27,9 @@ export const cartReducer = (state = { cartItems: [], shippingInfo: {} }, action)
                 ),
             }
         case 'SAVE_SHIPPING_INFO':
-            return { ...state, shippingInfo: action.payload} 
+            return { ...state, shippingInfo: action.payload}
+        case 'CLEAR_CART_ITEMS':
+            return { ...state, cartItems: []}
         default:
             return state;
     }

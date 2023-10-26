@@ -2,6 +2,7 @@ const Order = require('../models/Order');
 const Product = require('../models/Product');
 const sendEmail = require('../utils/sendEmail');
 const User = require('../models/User');
+const ApiFeatures = require('../utils/apifeatures')
 
 exports.newOrder = async (req, res, next) => {
     try {
@@ -94,10 +95,15 @@ exports.getAllOrders = async (req, res, next) => {
     let orders = await apiFeature.query;
     let filteredOrdersCount = orders.length;
 
+    apiFeature.pagination(resultPerPage);
+    orders = await apiFeature.query.clone();
+    let totalAmount = 0
+    orders.forEach((order) => totalAmount += order.totalPrice)
+
     res.status(200).json({
         success: true,
-        totalAmount,
-        orders,
+        totalAmount, ordersCount,
+        orders, filteredOrdersCount, resultPerPage
     });
 };
 

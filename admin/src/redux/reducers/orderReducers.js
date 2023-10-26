@@ -22,7 +22,10 @@ export const allOrdersReducer = (state = { orders: [] }, action) => {
         case 'ALL_ORDERS_SUCCESS':
             return {
                 isFetching: false,
-                orders: action.payload
+                orders: action.payload.orders,
+                filteredOrdersCount: action.payload.filteredOrdersCount,
+                totalAmount: action.payload.totalAmount,
+                resultPerPage: action.payload.resultPerPage,
             }
         case 'ALL_ORDERS_SUCCESS':
             return{

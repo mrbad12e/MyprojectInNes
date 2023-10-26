@@ -15,8 +15,8 @@ const myForm = new FormData();
 
 function addArray(data, field) {
     if (data.length <= 0) myForm.set(`${field}`, []);
-    data.map((vdata) => {
-        myForm.append(`${field}`, vdata);
+    data.forEach((vdata, index) => {
+        myForm.append(`${field}[${index}]`, vdata);
     });
 }
 
