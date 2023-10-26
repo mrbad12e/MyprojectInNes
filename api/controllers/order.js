@@ -88,10 +88,11 @@ exports.myOrders = async (req, res, next) => {
 
 // admin
 exports.getAllOrders = async (req, res, next) => {
-    const orders = await Order.find();
-
-    let totalAmount = 0;
-    orders.forEach((order) => (totalAmount += order.totalPrice));
+    let resultPerPage = Number(process.env.ADMIN_RESULT_PER_PAGE);
+    const ordersCount = await Order.countDocuments();
+    const apiFeature = new ApiFeatures(Order.find(), req.query).search().filter();
+    let orders = await apiFeature.query;
+    let filteredOrdersCount = orders.length;
 
     res.status(200).json({
         success: true,
