@@ -14,7 +14,6 @@ export const CustomerDetail = () => {
     const dispatch = useDispatch();
     const { id } = useParams();
     const { user, isFetching, error } = useSelector((state) => state.oneUser);
-    console.log(user);
 
     const avatarLink = `${process.env.BACKEND_URL}/${user.avatar}`;
     const [name, setName] = useState(user.username);

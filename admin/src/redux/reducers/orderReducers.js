@@ -36,3 +36,16 @@ export const allOrdersReducer = (state = { orders: [] }, action) => {
             return state
     }
 }
+
+export const orderDetailReducer = (state = { order: {} }, action) => {
+    switch (action.type) {
+        case 'ORDER_DETAIL_REQUEST':
+            return { isFetching: true, ...state }
+        case 'ORDER_DETAIL_SUCCESS':
+            return { isFetching: false, order: action.payload.order }
+        case 'ORDER_DETAIL_REQUEST':
+            return { isFetching: false, error: action.payload }
+        default:
+            return state
+    }
+}

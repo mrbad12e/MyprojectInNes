@@ -11,6 +11,7 @@ import { ProductTable } from './pages/Product/ProductTable';
 import { ProductDetail } from './pages/Product/ProductDetail';
 import { CreateProduct } from './pages/Product/CreateProduct';
 import { OrderTable } from './pages/Orders/OrderTable';
+import { OrderDetail } from './pages/Orders/OrderDetail';
 
 
 export const App = () => {
@@ -31,6 +32,7 @@ export const App = () => {
                 <Route path='/product/:id' element={<ProductDetail/>}/>
                 <Route path='/product/create' element={<CreateProduct/>}/>
                 <Route path='/orders' element={<OrderTable/>} />
+                <Route path='/order/:id' element={<OrderDetail/>}/>
             </Routes>
         </BrowserRouter>
     )

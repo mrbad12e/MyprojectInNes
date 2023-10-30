@@ -1,6 +1,6 @@
 const router = require('express').Router()
 const {loginAdmin, logout, forgotPassword, resetPassword, updateUser, getAllUsers, getSingleUser, deleteUser} =require('../controllers/user')
-const { getRecentOrders, getAllOrders, updateOrder, deleteOrder } = require('../controllers/order')
+const { getRecentOrders, getAllOrders, updateOrder, deleteOrder, getSingleOrder } = require('../controllers/order')
 
 const {isAuthUser, authRoles} = require('../middleware/auth')
 const uploadFile = require('../utils/uploadFile')
@@ -32,5 +32,6 @@ router.route('/order/all').get(isAuthUser, authRoles('admin'), getAllOrders)
 router.route('/order/:id')
     .put(isAuthUser, authRoles("admin"), updateOrder)
     .delete(isAuthUser, authRoles("admin"), deleteOrder)
+    .get(getSingleOrder)
 
 module.exports = router

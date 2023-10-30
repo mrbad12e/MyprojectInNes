@@ -44,8 +44,8 @@ export const OrderTable = () => {
                                         <TableRow key={order._id}>
                                             <TableCell>{index + 1}</TableCell>
                                             <TableCell>
-                                                <Link color={'primary'}>
-                                                    {order._id}
+                                                <Link color={'primary'} href={`/order/${order._id}`}>
+                                                    {order.paymentInfo.id}
                                                 </Link>
                                             </TableCell>
                                         </TableRow>
