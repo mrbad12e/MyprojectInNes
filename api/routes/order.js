@@ -12,7 +12,7 @@ const {initiateRefund, updateRefundStatus, getAllRefunds} = require('../controll
 
 router.route('/order/new').post(isAuthUser, newOrder)
 router.route('/order/:id').get(isAuthUser, getSingleOrder)
-router.route('/orders/me').get(isAuthUser, myOrders)
+router.route('/order/me').get(isAuthUser, myOrders)
 router.route('/order/:id/return').post(isAuthUser, requestReturn)
 
 

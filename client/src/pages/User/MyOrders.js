@@ -5,10 +5,9 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Menubar } from './Menubar';
 import { CameraAlt } from '@mui/icons-material';
 import Loader from '../../components/Loader/Loader';
-export const Profile = () => {
+export const MyOrders = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const backend_url = process.env.BACKEND_URL;
     const { currentUser, isFetching, isAuthenticated } = useSelector((state) => state.user);
     
     const [username, setUsername] = useState(currentUser.username);
