@@ -20,6 +20,7 @@ import Payment from './pages/Cart/Payment';
 import Success from './pages/Success';
 import OrderSuccess from './pages/Cart/OrderSuccess';
 import { Profile } from './pages/User/Profile';
+import { MyOrders } from './pages/User/MyOrders';
 
 export const App = () => {
     const user = useSelector((state) => state.user.currentUser);
@@ -43,6 +44,7 @@ export const App = () => {
                 <Route path="/login" element={user ? <Navigate to="/" /> : <Login />} />
                 <Route path="/register" element={user ? <Navigate to="/" /> : <Register />} />
                 <Route path='/me' element={user ? <Profile /> : <Navigate to="/" />} />
+                <Route path='/me/orders' element={<MyOrders />} />
             </Routes>
             <Footer />
         </BrowserRouter>

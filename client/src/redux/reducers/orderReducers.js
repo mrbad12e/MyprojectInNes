@@ -16,7 +16,10 @@ export const myOrdersReducer = (state = { orders: [] }, action) => {
         case 'MY_ORDERS_REQUEST':
             return { isFetching: true }
         case 'MY_ORDERS_SUCCESS':
-            return { isFetching: false, orders: action.payload }
+            return { isFetching: false, orders: action.payload.orders,
+                filteredOrdersCount: action.payload.filteredOrdersCount,
+                resultPerPage: action.payload.resultPerPage
+            }
         case 'MY_ORDERS_FAIL':
             return { isFetching: false, error: action.payload }
         default:

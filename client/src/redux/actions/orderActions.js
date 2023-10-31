@@ -18,7 +18,7 @@ export const myOrders = () => async (dispatch) => {
     try {
         dispatch({ type: 'MY_ORDERS_REQUEST' })
         const { data } = await axios.get('/api/order/orders/me')
-        dispatch({ type: 'MY_ORDERS_SUCCESS', payload: data.orders })
+        dispatch({ type: 'MY_ORDERS_SUCCESS', payload: data })
     } catch (error) {
         dispatch({
             type: 'MY_ORDERS_FAIL',

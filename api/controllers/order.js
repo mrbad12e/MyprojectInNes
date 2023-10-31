@@ -2,7 +2,7 @@ const Order = require('../models/Order');
 const Product = require('../models/Product');
 const sendEmail = require('../utils/sendEmail');
 const User = require('../models/User');
-const ApiFeatures = require('../utils/apifeatures')
+const ApiFeatures = require('../utils/apifeatures');
 
 exports.newOrder = async (req, res, next) => {
     try {
@@ -78,12 +78,21 @@ exports.getSingleOrder = async (req, res, next) => {
 };
 // get logged in user orders (for user)
 exports.myOrders = async (req, res, next) => {
-    const orders = await Order.find({
-        user: req.user._id,
-    });
+    let resultPerPage = Number(process.env.RESULT_PER_PAGE);
+    const apiFeature = new ApiFeatures(Order.find({ user: req.user._id }), req.query)
+        .search()
+        .filter();
+    let orders = await apiFeature.query;
+    let filteredOrdersCount = orders.length;
+
+    apiFeature.pagination(resultPerPage);
+    orders = await apiFeature.query.clone();
+
     res.status(200).json({
         success: true,
         orders,
+        filteredOrdersCount,
+        resultPerPage,
     });
 };
 
@@ -97,13 +106,16 @@ exports.getAllOrders = async (req, res, next) => {
 
     apiFeature.pagination(resultPerPage);
     orders = await apiFeature.query.clone();
-    let totalAmount = 0
-    orders.forEach((order) => totalAmount += order.totalPrice)
+    let totalAmount = 0;
+    orders.forEach((order) => (totalAmount += order.totalPrice));
 
     res.status(200).json({
         success: true,
-        totalAmount, ordersCount,
-        orders, filteredOrdersCount, resultPerPage
+        totalAmount,
+        ordersCount,
+        orders,
+        filteredOrdersCount,
+        resultPerPage,
     });
 };
 
@@ -156,7 +168,7 @@ exports.updateOrder = async (req, res, next) => {
         currentDate.getMonth(),
         currentDate.getDate() + randomDays
     );
-    
+
     await sendEmail({
         username: order.user.username,
         email: order.user.email,

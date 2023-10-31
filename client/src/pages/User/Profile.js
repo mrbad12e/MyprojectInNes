@@ -28,7 +28,7 @@ export const Profile = () => {
                 <Container maxWidth="lg" sx={{ my: 3 }}>
                     <Grid container spacing={2}>
                         <Menubar />
-                        <Grid item xs={8}>
+                        <Grid item xs={9}>
                             <Grid container rowGap={3}>
                                 <Grid container justifyContent={'center'}>
                                     <Badge
