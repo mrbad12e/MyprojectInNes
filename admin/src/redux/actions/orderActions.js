@@ -30,3 +30,24 @@ export const getOrderDetail = (id) => async (dispatch) => {
         dispatch({ type: 'ORDER_DETAIL_FAIL', payload: error.response.data.message })
     }
 }
+
+export const updateOrderDetail = (id, status) => async (dispatch) => {
+    try {
+        dispatch({ type: 'UPDATE_ORDER_REQUEST' })
+        const config = { headers: { 'Content-Type': 'application/json' } };
+        const { data  } = await axios.put(`/admin/order/${id}`, { status }, { config })
+        dispatch({ type: 'UPDATE_ORDER_SUCCESS', payload: data })
+    } catch (error) {
+        dispatch({ type: 'UPDATE_ORDER_FAIL', payload: error.response.data.message })
+    }
+};
+
+export const deleteOrder = (id) => async (dispatch) =>{
+    try {
+        dispatch({ type: 'DELETE_ORDER_REQUEST' })
+        const { data } = await axios.delete(`/admin/order/${id}`)
+        dispatch({ type: 'DELETE_ORDER_SUCCESS', payload: data })
+    } catch (error) {
+        dispatch({ type: 'DELETE_ORDER_FAIL', payload: error.response.data.message })
+    }
+};

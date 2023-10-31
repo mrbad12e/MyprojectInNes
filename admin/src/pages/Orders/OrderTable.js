@@ -37,6 +37,7 @@ export const OrderTable = () => {
                                     <TableRow>
                                         <TableCell>Index</TableCell>
                                         <TableCell>Title</TableCell>
+                                        <TableCell align='right'>Status</TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
@@ -48,6 +49,7 @@ export const OrderTable = () => {
                                                     {order.paymentInfo.id}
                                                 </Link>
                                             </TableCell>
+                                            <TableCell align='right'>{order.orderStatus}</TableCell>
                                         </TableRow>
                                     ))}
                                 </TableBody>

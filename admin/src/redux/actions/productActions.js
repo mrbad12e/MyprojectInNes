@@ -5,7 +5,6 @@ export const getProduct =
     async (dispatch) => {
         try {
             dispatch({ type: 'ALL_PRODUCT_REQUEST' });
-            // let link = '/api/product/products'
             let link = `/admin/products?keyword=${keyword}&page=${currentPage}`;
             const { data } = await axios.get(link);
             dispatch({

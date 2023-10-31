@@ -120,8 +120,7 @@ exports.getRecentOrders = async (req, res, next) => {
 };
 
 exports.updateOrder = async (req, res, next) => {
-    const order = await Order.findById(req.params.id);
-    const user = await User.findById(req.user._id);
+    const order = await Order.findById(req.params.id).populate('user', 'username email');
     if (!order) {
         return res.status(404).json({
             success: false,
@@ -157,23 +156,15 @@ exports.updateOrder = async (req, res, next) => {
         currentDate.getMonth(),
         currentDate.getDate() + randomDays
     );
-    const emailMessage = `<html>
-    <body>
-    <p>Hello ${user.username}!</p>
-    <p>Your order ${order._id} has been ${
-        order.orderStatus
-    }. Your estimated Date of delivery is ${estimatedDeliveryDate.toDateString()}.</p>
-    <p>Thank you for ordering. For more please visit our website.</p>
-    <p>Here's the image of your ordered items:</p>
-    ${order.orderItems.map((item) => `${item.name} - Quantity: ${item.quantity} - Price: $ ${item.price}`).join('\n')}
-    <p>Total Price: $ ${order.totalPrice}</p>
-    <p>Thank you for ordering.</p>
-    </body>
-    </html>`;
+    
     await sendEmail({
-        email: user.email,
-        subject: `Your Order Status Update: ${order.orderStatus}`,
-        html: emailMessage,
+        username: order.user.username,
+        email: order.user.email,
+        type: 'OrderDelivered',
+        subject: 'Order has been delivered',
+        items: order.orderItems,
+        total: order.totalPrice,
+        date: estimatedDeliveryDate.toDateString(),
     });
 
     res.status(200).json({

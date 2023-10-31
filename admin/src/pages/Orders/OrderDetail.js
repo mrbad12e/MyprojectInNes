@@ -4,11 +4,10 @@ import Loader from '../../components/Loader/Loader';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button, Grid, MenuItem, Paper, Select, Typography } from '@mui/material';
-import { getOrderDetail } from '../../redux/actions/orderActions';
+import { getOrderDetail, updateOrderDetail } from '../../redux/actions/orderActions';
 import { Orders } from './Orders';
 import { OrderItemsTable } from './OrderItemsTable';
 
-const myForm = new FormData();
 const paperDesign = {
     p: 2,
     display: 'flex',
@@ -69,6 +68,8 @@ export const OrderDetail = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        dispatch(updateOrderDetail(id, status));
+        navigate('/orders');
     };
 
     return (
