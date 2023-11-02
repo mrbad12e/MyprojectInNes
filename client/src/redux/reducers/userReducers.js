@@ -60,6 +60,10 @@ export const profileReducer = (state = {}, action) => {
                 ...state, isFetching: false,
                 error: action.payload
             }
+        case 'UPDATE_PASSWORD_RESET':
+            return {
+                ...state, isUpdated: false
+            }
         default:
             return state;
     }

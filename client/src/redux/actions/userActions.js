@@ -58,11 +58,11 @@ export const logout = () => async (dispatch) => {
     }
 };
 
-export const updatePassword = (form) => async (dispatch) => {
+export const updatePassword = (oldPassword, newPassword, confirmPassword) => async (dispatch) => {
     try {
         dispatch({ type: 'UPDATE_PASSWORD_REQUEST' });
         const config = { headers: { 'Content-Type': 'application/json' } };
-        const { data } = await axios.put('/api/users/password/update', form, { config });
+        const { data } = await axios.put('/api/users/password/update', {oldPassword, newPassword, confirmPassword}, { config });
 
         dispatch({ type: 'UPDATE_PASSWORD_SUCCESS', payload: data.success });
     } catch (error) {

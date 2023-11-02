@@ -21,6 +21,10 @@ import Success from './pages/Success';
 import OrderSuccess from './pages/Cart/OrderSuccess';
 import { Profile } from './pages/User/Profile';
 import { MyOrders } from './pages/User/MyOrders';
+import { Update } from '@mui/icons-material';
+import UpdatePassword from './pages/User/UpdatePassword';
+import { AddProfile } from './pages/User/AddProfile';
+import { OrderDetail } from './pages/Return/OrderDetail';
 
 export const App = () => {
     const user = useSelector((state) => state.user.currentUser);
@@ -30,21 +34,33 @@ export const App = () => {
             <Announcement />
             <Navbar />
             <Routes>
+                {/* Public routes */}
                 <Route path="/" element={<Home />} />
                 <Route path="/product/:id" element={<Product />} />
                 <Route path="/products/:keyword" element={<Store />} />
                 <Route path="/store" element={<Store />} />
+
+                {/* Authenticate routes */}
+                <Route path="/login" element={user ? <Navigate to="/" /> : <Login />} />
+                <Route path="/register" element={user ? <Navigate to="/" /> : <Register />} />
                 <Route path="/password/forgot" element={<ForgotPassword />} />
                 <Route path="/password/reset/:token" element={<ResetPassword />} />
+                
+                {/* Cart routes */}
                 <Route path="/cart" element={<Cart />} />
                 <Route path="/success" element={<OrderSuccess />} />
                 <Route path="/cart/checkout/form" element={<Shipping />} />
                 <Route path="/cart/checkout/confirm" element={<ConfirmOrder />} />
                 <Route path="/cart/checkout/payment" element={<Payment />} />
-                <Route path="/login" element={user ? <Navigate to="/" /> : <Login />} />
-                <Route path="/register" element={user ? <Navigate to="/" /> : <Register />} />
+                
+                {/* Profile routes */}
                 <Route path='/me' element={user ? <Profile /> : <Navigate to="/" />} />
                 <Route path='/me/orders' element={<MyOrders />} />
+                <Route path='/me/password' element={<UpdatePassword />} />
+                <Route path='/me/profile' element={<AddProfile />} />
+
+                {/* Return routes */}
+                <Route path='/order/:id' element={<OrderDetail />} />
             </Routes>
             <Footer />
         </BrowserRouter>

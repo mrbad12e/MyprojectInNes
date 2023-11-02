@@ -204,9 +204,8 @@ exports.getUserDetails = async (req, res, next) => {
 exports.updatePassword = async (req, res, next) => {
     try {
         const user = await User.findById(req.user.id).select('+password');
-
         const isPasswordMatched = await user.comparePassword(req.body.oldPassword);
-
+        
         if (!isPasswordMatched) {
             return res.status(400).json({
                 success: false,
