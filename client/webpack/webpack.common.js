@@ -1,5 +1,5 @@
 const path = require('path');
-const Dotenv= require('dotenv-webpack')
+const Dotenv = require('dotenv-webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
@@ -36,23 +36,22 @@ module.exports = {
     },
     output: {
         path: path.resolve(__dirname, '..', './build'),
-        filename: '[name].[chunkhash].js',
-        publicPath: '/'
+        filename: 'bundle.js',
     },
     plugins: [
         new HtmlWebpackPlugin({
             template: path.resolve(__dirname, '..', './src/index.html'),
         }),
-        new Dotenv()
+        new Dotenv(),
     ],
     devServer: {
         port: 3000,
         proxy: {
-            '/api':{
-                target: `http://localhost:5000`
-            }
+            '/api': {
+                target: `http://localhost:5000`,
+            },
         },
-        
+
         historyApiFallback: true,
     },
 };

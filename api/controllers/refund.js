@@ -2,20 +2,13 @@ const Return = require('../models/Return')
 const Refund = require('../models/Refund')
 const Order = require('../models/Order')
 
-exports.initiateRefund = async (req, res) => {
+exports.initiateRefund = async (req, res, next) => {
     try {
         const order = await Order.findById(req.params.id).populate('returns')
         if (!order) {
             return res.status(404).json({
                 success: false,
                 message: 'Order not found'
-            });
-        }
-
-        if (order.orderStatus !== 'Delivered') {
-            return res.status(400).json({
-                success: false,
-                message: 'Order has not been delivered yet'
             });
         }
 
@@ -64,10 +57,11 @@ exports.initiateRefund = async (req, res) => {
                 }
             }))
         )
-
+        let requestPaypalURL = `${process.env.PAYPAL_BASE_URL}/v2/payment/captures/${order.paymentInfo.id}/refund`
         order.isRefunded = true
         order.refundStatus = 'Initiated'
         order.refundRequestedAt = new Date()
+        
         await order.save()
 
         res.status(200).json({
@@ -85,7 +79,7 @@ exports.initiateRefund = async (req, res) => {
     }
 }
 
-exports.updateRefundStatus = async (req, res) => { 
+exports.updateRefundStatus = async (req, res, next) => { 
     try {
         const { refundStatus } = req.body
         const refundId = req.params.refundId

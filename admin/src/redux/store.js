@@ -3,7 +3,7 @@ import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, 
 import storage from 'redux-persist/lib/storage'
 import thunk from 'redux-thunk'
 import { userReducers, profileReducer, forgotPasswordReducer, allUsersReducers, userActionReducer } from './reducers/userReducers'
-import { allOrdersReducer, orderDetailReducer, recentOrderReducers } from './reducers/orderReducers'
+import { allOrdersReducer, allReturnsReducer, orderDetailReducer, recentOrderReducers, refundOrderReducer } from './reducers/orderReducers'
 import { newProduct, productDetailReducer, productsReducer } from './reducers/productReducers'
 
 const persistConfig = {
@@ -23,7 +23,10 @@ const rootReducer = combineReducers({
 
     products: productsReducer,
     productDetail: productDetailReducer,
-    newProduct: newProduct
+    newProduct: newProduct,
+
+    allReturns: allReturnsReducer,
+    refundOrder: refundOrderReducer
 })
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)

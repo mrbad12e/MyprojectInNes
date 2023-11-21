@@ -2,8 +2,8 @@ import { Button, Container, Grid, Paper, Typography } from '@mui/material';
 import {} from '@mui/icons-material';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useEffect, Fragment, useState } from 'react';
-import { getOrderDetail } from '../../redux/actions/orderActions';
+import { useEffect, Fragment } from 'react';
+import { confirmOrder, getOrderDetail } from '../../redux/actions/orderActions';
 import Loader from '../../components/Loader/Loader';
 import { OrderTable } from './OrderTable';
 
@@ -109,7 +109,15 @@ export const OrderDetail = () => {
         if (error) console.log(error);
         dispatch(getOrderDetail(id));
     }, [dispatch, id, error]);
-
+    const handleConfirm = (e) => {
+        e.preventDefault();
+        dispatch(confirmOrder(id));
+        navigate('/me/orders')
+    }
+    const handleReturn = (e) => {
+        e.preventDefault();
+        navigate(`/order/${id}/return`)
+    }
     return (
         <Fragment>
             <Container sx={{ my: 2 }}>
@@ -128,12 +136,12 @@ export const OrderDetail = () => {
                         </Grid>
                         <Grid container justifyContent={'center'} gap={4}>
                             <Grid item>
-                                <Button variant="outlined" disabled={disable}>
+                                <Button variant="outlined" disabled={disable} onClick={handleReturn}>
                                     Return
                                 </Button>
                             </Grid>
                             <Grid item>
-                                <Button variant="contained">Confirm order</Button>
+                                <Button variant="contained" disabled={!disable} onClick={handleConfirm}>Confirm order</Button>
                             </Grid>
                         </Grid>
                     </Grid>

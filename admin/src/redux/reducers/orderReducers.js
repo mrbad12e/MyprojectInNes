@@ -41,13 +41,52 @@ export const orderDetailReducer = (state = { order: {} }, action) => {
     switch (action.type) {
         case 'ORDER_DETAIL_REQUEST':
         case 'UPDATE_ORDER_REQUEST':
+        case 'DELETE_ORDER_REQUEST':
             return { isFetching: true, ...state }
         case 'ORDER_DETAIL_SUCCESS':
         case 'UPDATE_ORDER_SUCCESS':
+        case 'DELETE_ORDER_SUCCESS':
             return { isFetching: false, order: action.payload.order }
         case 'ORDER_DETAIL_FAIL':
         case 'UPDATE_ORDER_FAIL':
+        case 'DELETE_ORDER_FAIL':
             return { isFetching: false, error: action.payload }
+        case 'DELETE_ORDER_RESET':
+            return { isFetching: false, order: {} }
+        default:
+            return state
+    }
+}
+
+export const allReturnsReducer = (state = { returns: [] }, action) => {
+    switch (action.type) {
+        case 'ALL_RETURNS_REQUEST':
+            return { isFetching: true, ...state }
+        case 'ALL_RETURNS_SUCCESS':
+            return {
+                isFetching: false,
+                returns: action.payload.returns,
+                returnsCount: action.payload.returnsCount,
+                filteredReturnsCount: action.payload.filteredReturnsCount,
+                resultPerPage: action.payload.resultPerPage,
+            }
+        case 'ALL_RETURNS_FAIL':
+            return { isFetching: false, error: action.payload }
+        default:
+            return state
+    }
+}
+
+export const refundOrderReducer = (state = {}, action) => {
+    switch (action.type) {
+        case 'REFUND_ORDER_REQUEST':
+            return { isFetching: true, ...state }
+        case 'REFUND_ORDER_SUCCESS':
+            return { isFetching: false, success: action.payload }
+        case 'REFUND_ORDER_FAIL':
+            return { isFetching: false, error: action.payload }
+        case 'REFUND_ORDER_RESET':
+            return {}
         default:
             return state
     }

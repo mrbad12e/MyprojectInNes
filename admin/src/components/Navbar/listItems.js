@@ -42,7 +42,7 @@ export const secondaryListItems = (
         <ListSubheader component="div" inset>
             Saved reports
         </ListSubheader>
-        <ListItemButton>
+        <ListItemButton href='/returns'>
             <ListItemIcon>
                 <Assignment/>
             </ListItemIcon>

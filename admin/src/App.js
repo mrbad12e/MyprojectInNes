@@ -12,6 +12,8 @@ import { ProductDetail } from './pages/Product/ProductDetail';
 import { CreateProduct } from './pages/Product/CreateProduct';
 import { OrderTable } from './pages/Orders/OrderTable';
 import { OrderDetail } from './pages/Orders/OrderDetail';
+import { ReturnTable } from './pages/Orders/ReturnTable';
+import { ReturnOrder } from './pages/Orders/ReturnOrder';
 
 
 export const App = () => {
@@ -33,6 +35,8 @@ export const App = () => {
                 <Route path='/product/create' element={<CreateProduct/>}/>
                 <Route path='/orders' element={<OrderTable/>} />
                 <Route path='/order/:id' element={<OrderDetail/>}/>
+                <Route path='/returns' element={<ReturnTable/>}/>
+                <Route path='/return/:id' element={<ReturnOrder/>}/>
             </Routes>
         </BrowserRouter>
     )

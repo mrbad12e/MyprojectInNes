@@ -1,10 +1,13 @@
 export const newOrderReducer = (state = {}, action) => {
     switch (action.type) {
         case 'CREATE_ORDER_REQUEST':
+        case 'CAPTURE_ORDER_REQUEST':
             return { isFetching: true, ...state }
         case 'CREATE_ORDER_SUCCESS':
+        case 'CAPTURE_ORDER_SUCCESS':
             return { isFetching: false, order: action.payload }
         case 'CREATE_ORDER_FAIL':
+        case 'CAPTURE_ORDER_FAIL':
             return { isFetching: false, error: action.payload }
         default:
             return state
@@ -30,10 +33,13 @@ export const myOrdersReducer = (state = { orders: [] }, action) => {
 export const orderDetailReducer = (state = { order: {} }, action) => {
     switch (action.type) {
         case 'ORDER_DETAIL_REQUEST':
+        case 'CONFIRM_ORDER_REQUEST':
             return { isFetching: true, ...state }
         case 'ORDER_DETAIL_SUCCESS':
+        case 'CONFIRM_ORDER_SUCCESS':
             return { isFetching: false, order: action.payload }
         case 'ORDER_DETAIL_FAIL':
+        case 'CONFIRM_ORDER_FAIL':
             return { isFetching: false, error: action.payload }
         default:
             return state

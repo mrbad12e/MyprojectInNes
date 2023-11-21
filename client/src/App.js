@@ -17,14 +17,14 @@ import Footer from './components/Footer/Footer';
 import Shipping from './pages/Cart/Shipping';
 import ConfirmOrder from './pages/Cart/ConfirmOrder';
 import Payment from './pages/Cart/Payment';
-import Success from './pages/Success';
 import OrderSuccess from './pages/Cart/OrderSuccess';
 import { Profile } from './pages/User/Profile';
 import { MyOrders } from './pages/User/MyOrders';
-import { Update } from '@mui/icons-material';
 import UpdatePassword from './pages/User/UpdatePassword';
 import { AddProfile } from './pages/User/AddProfile';
 import { OrderDetail } from './pages/Return/OrderDetail';
+import { Return } from './pages/Return/Return';
+import { NotFound } from './pages/NotFound';
 
 export const App = () => {
     const user = useSelector((state) => state.user.currentUser);
@@ -52,6 +52,7 @@ export const App = () => {
                 <Route path="/cart/checkout/form" element={<Shipping />} />
                 <Route path="/cart/checkout/confirm" element={<ConfirmOrder />} />
                 <Route path="/cart/checkout/payment" element={<Payment />} />
+                <Route path='/not-found' element={<NotFound />} />
                 
                 {/* Profile routes */}
                 <Route path='/me' element={user ? <Profile /> : <Navigate to="/" />} />
@@ -61,6 +62,7 @@ export const App = () => {
 
                 {/* Return routes */}
                 <Route path='/order/:id' element={<OrderDetail />} />
+                <Route path='/order/:id/return' element={<Return />} />
             </Routes>
             <Footer />
         </BrowserRouter>

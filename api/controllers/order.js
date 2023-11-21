@@ -4,6 +4,12 @@ const sendEmail = require('../utils/sendEmail');
 const User = require('../models/User');
 const ApiFeatures = require('../utils/apifeatures');
 
+async function updateStock(id, quantity) {
+    const product = await Product.findById(id);
+    product.Stock -= quantity;
+    await product.save({ validateBeforeSave: false });
+}
+
 exports.newOrder = async (req, res, next) => {
     try {
         const user = await User.findById(req.user._id);
@@ -79,9 +85,7 @@ exports.getSingleOrder = async (req, res, next) => {
 // get logged in user orders (for user)
 exports.myOrders = async (req, res, next) => {
     let resultPerPage = Number(process.env.RESULT_PER_PAGE);
-    const apiFeature = new ApiFeatures(Order.find({ user: req.user._id }), req.query)
-        .search()
-        .filter();
+    const apiFeature = new ApiFeatures(Order.find({ user: req.user._id }), req.query).search().filter();
     let orders = await apiFeature.query;
     let filteredOrdersCount = orders.length;
 
@@ -96,11 +100,36 @@ exports.myOrders = async (req, res, next) => {
     });
 };
 
+// confirm order after received (for user)
+exports.confirmOrder = async (req, res, next) => {
+    const order = await Order.findById(req.params.id).populate('user', 'username email');
+    if (!order) {
+        return res.status(404).json({
+            success: false,
+            message: 'Order not found with this id',
+        });
+    }
+    if (order.orderStatus === 'Delivered') {
+        order.orderStatus = 'Shipped';
+
+        order.orderItems.forEach(async (o) => {
+            await updateStock(o.product, o.quantity);
+        });
+    }
+    await order.save({ validateBeforeSave: false });
+
+    res.status(200).json({
+        success: true,
+        message: 'Order confirmed successfully',
+        order,
+    });
+};
+
 // admin
 exports.getAllOrders = async (req, res, next) => {
     let resultPerPage = Number(process.env.ADMIN_RESULT_PER_PAGE);
     const ordersCount = await Order.countDocuments();
-    const apiFeature = new ApiFeatures(Order.find(), req.query).search().filter();
+    const apiFeature = new ApiFeatures(Order.find().sort({ updatedAt: -1 }), req.query).search().filter();
     let orders = await apiFeature.query;
     let filteredOrdersCount = orders.length;
 
@@ -146,11 +175,6 @@ exports.updateOrder = async (req, res, next) => {
             message: 'You have already delivered this order',
         });
     }
-    if (req.body.status === 'Shipped') {
-        order.orderItems.forEach(async (o) => {
-            await updateStock(o.product, o.quantity);
-        });
-    }
 
     order.orderStatus = req.body.status;
 
@@ -185,12 +209,6 @@ exports.updateOrder = async (req, res, next) => {
         order,
     });
 };
-
-async function updateStock(id, quantity) {
-    const product = await Product.findById(id);
-    product.Stock -= quantity;
-    await product.save({ validateBeforeSave: false });
-}
 
 exports.deleteOrder = async (req, res, next) => {
     const order = await Order.findById(req.params.id);

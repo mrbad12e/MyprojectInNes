@@ -3,9 +3,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import Loader from '../../components/Loader/Loader';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Button, Grid, MenuItem, Paper, Select, Typography } from '@mui/material';
-import { getOrderDetail, updateOrderDetail } from '../../redux/actions/orderActions';
+import { Box, Button, Grid, MenuItem, Paper, Select, Typography } from '@mui/material';
 import { Orders } from './Orders';
+import { PayPalButtons, PayPalScriptProvider } from '@paypal/react-paypal-js';
+import { getOrderDetail, refundOrder } from '../../redux/actions/orderActions';
 import { OrderItemsTable } from './OrderItemsTable';
 
 const paperDesign = {
@@ -15,6 +16,11 @@ const paperDesign = {
     m: 2,
 };
 const statusOptions = ['Processing', 'Delivered', 'Shipped'];
+
+const initialOptions = {
+    clientId: 'AVe5WW3PC0WPLFESn6iIvLouPleDZz6jWYk7YS7XQLFjsAZYqYXpMkwiV7cPYyqRPsVgds88aSZG5-oO',
+    currency: 'USD',
+};
 
 function formatTime(inputTime) {
     const date = new Date(inputTime);
@@ -36,44 +42,23 @@ function formatTime(inputTime) {
     return `${formattedHour}-${formattedMinute}-${formattedSecond}-${formattedDay}-${formattedMonth}-${year}`;
 }
 
-let disable = true;
-export const OrderDetail = () => {
+// let disable = true;
+export const ReturnOrder = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const backend_url = process.env.BACKEND_URL;
     const { id } = useParams();
     const { order, isFetching, error } = useSelector((state) => state.orderDetail);
 
     const address = `${order.shippingInfo.address}, ${order.shippingInfo.city}, ${order.shippingInfo.country}`;
-    const [status, setStatus] = useState('');
     useEffect(() => {
         if (error) console.log(error);
         dispatch(getOrderDetail(id));
     }, [dispatch, error, id]);
 
-    useEffect(() => {
-        if (order) setStatus(order.orderStatus);
-    }, [order]);
-
-    const handleStatusChange = (e) => {
-        if (order.orderStatus !== e.target.value) {
-            setStatus(e.target.value);
-            disable = false;
-        } else {
-            setStatus(e.target.value);
-            disable = true;
-        }
-    };
-
-    const handleSubmit = (e) => {
+    const handleRefund = (e) => {
         e.preventDefault();
-        dispatch(updateOrderDetail(id, status));
-        navigate('/orders');
+        dispatch(refundOrder(id))
     };
-    const handleReturn = (e) => {
-        e.preventDefault();
-        navigate(`/return/${id}`);
-    }
 
     return (
         <Orders>
@@ -134,16 +119,26 @@ export const OrderDetail = () => {
                             </Grid>
                             <Grid container spacing={3} alignItems={'center'}>
                                 <Grid item xs>
+                                    <Typography align={'center'}>Delivered at</Typography>
+                                </Grid>
+                                <Grid item xs={9}>
+                                    {formatTime(order.DeliveredAt)}
+                                </Grid>
+                            </Grid>
+                            <Grid container spacing={3} alignItems={'center'}>
+                                <Grid item xs>
+                                    <Typography align={'center'}>Return Requested at</Typography>
+                                </Grid>
+                                <Grid item xs={9}>
+                                    {formatTime(order.returnRequestedAt)}
+                                </Grid>
+                            </Grid>
+                            <Grid container spacing={3} alignItems={'center'}>
+                                <Grid item xs>
                                     <Typography align={'center'}>Order Status</Typography>
                                 </Grid>
                                 <Grid item xs={9}>
-                                    <Select value={status} onChange={handleStatusChange}>
-                                        {statusOptions.map((status, index) => (
-                                            <MenuItem key={index} value={status}>
-                                                {status}
-                                            </MenuItem>
-                                        ))}
-                                    </Select>
+                                    <Typography>{order.orderStatus}</Typography>
                                 </Grid>
                             </Grid>
                         </Grid>
@@ -165,17 +160,8 @@ export const OrderDetail = () => {
                     )}
                 </Paper>
             </Grid>
-            <Grid container justifyContent={'space-evenly'} sx={{ flexGrow: 1 }}>
-                <Grid item>
-                    <Button variant="contained" onClick={handleSubmit} disabled={disable}>
-                        Submit Changes
-                    </Button>
-                </Grid>
-                <Grid item>
-                    <Button variant='contained' onClick={handleReturn} color='error' disabled={!order.isReturned}>
-                        Return
-                    </Button>
-                </Grid>
+            <Grid item xs={12}>
+                <Button variant='contained' onClick={handleRefund}>Refund</Button>
             </Grid>
         </Orders>
     );

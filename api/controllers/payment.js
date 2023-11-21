@@ -1,95 +1,87 @@
-import fetch from 'node-fetch';
-import 'dotenv/config';
+const axios = require('axios');
+const client_id = 'AVe5WW3PC0WPLFESn6iIvLouPleDZz6jWYk7YS7XQLFjsAZYqYXpMkwiV7cPYyqRPsVgds88aSZG5-oO';
+const app_secret = 'EHV6ZGE17NDs2tnBHPSTtpSdk3DpOLFnJfr7w6HKAY-trDaCUB6y2T8GggDM-9DOGLf0kViu90sp6uRA';
+const base = 'https://api-m.sandbox.paypal.com';
 
-const { CLIENT_ID, APP_SECRET, BACKEND_URL } = process.env;
-
-const generateAccessToken = async () => {
+async function generateAccessToken() {
     try {
-        const auth = Buffer.from(CLIENT_ID + ':' + APP_SECRET).toString('base64');
-        const response = await fetch(`${BACKEND_URL}/oauth2/token`, {
+        const response = await axios({
+            url: `${base}/v1/oauth2/token`,
             method: 'post',
-            body: 'grant_type=client_credentials',
             headers: {
-                Authorization: `Basic ${auth}`,
+                Accept: 'application/json',
+                'Accept-Language': 'en_US',
+                'content-type': 'application/x-www-form-urlencoded',
+            },
+            auth: {
+                username: client_id,
+                password: app_secret,
+            },
+            params: {
+                grant_type: 'client_credentials',
             },
         });
-
-        const data = await response.json();
-        console.log(data);
+        const data = response.data;
         return data.access_token;
     } catch (error) {
-        console.error('Failed to generate Access Token:', error);
+        console.error('Error generating access token:', error);
     }
-};
-
-const createOrder = async () => {
-    const accessToken = await generateAccessToken();
-    const url = `${BACKEND_URL}/v2/checkout/orders`;
-    const payload = {
-        intent: 'CAPTURE',
-        purchase_units: [
-            {
-                amount: {
-                    currency_code: 'USD',
-                    value: '0.02',
-                },
-            },
-        ],
-    };
-
-    const response = await fetch(url, {
-        headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${accessToken}∫`,
-        },
-        method: 'POST',
-        body: JSON.stringify(payload),
-    });
-
-    return handleResponse(response);
-};
-
-const capturePayment = async (orderID) => {
-    const accessToken = await generateAccessToken();
-    const url = `${base}/v2/checkout/orders/\${orderID}/capture`;
-
-    const response = await fetch(url, {
-        method: 'post',
-        headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${accessToken}∫`,
-        },
-    });
-
-    return handleResponse(response);
-};
-
-async function handleResponse(response) {
-    if (response.status === 200 || response.status === 201) {
-        return response.json();
-    }
-
-    const errorMessage = await response.text();
-    throw new Error(errorMessage);
 }
 
-app.post('/orders', async (req, res) => {
+exports.captureOrder = async (req, res, next) =>{
     try {
-        const response = await createOrder();
-        res.json(response);
+        const accessToken = await generateAccessToken();
+        console.log(req.body.token);
+        const response = await axios.post(
+            `${base}/v2/checkout/orders/${req.body.token}/capture`,
+            {},
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            }
+        );
+        res.status(200).json({ success: true, order: response.data });
     } catch (error) {
-        console.error('Failed to create order:', error);
-        res.status(500).json({ error: 'Failed to create order.' });
+        res.status(500).json({ success: false, error: error.message });
     }
-});
+}
 
-app.post('/orders/:orderID/capture', async (req, res) => {
+exports.createOrder = async (req, res, next) => {
     try {
-        const { orderID } = req.params;
-        const response = await capturePayment(orderID);
-        res.json(response);
+        const accessToken = await generateAccessToken();
+        const url = `${base}/v2/checkout/orders`;
+        const orderBody = {
+            intent: 'CAPTURE',
+            purchase_units: [
+                {
+                    amount: {
+                        currency_code: 'USD',
+                        value: req.body.totalPrice,
+                    },
+                },
+            ],
+            application_context: {
+                return_url: `${process.env.FRONTEND_URL}/success`,
+                cancel_url: `${process.env.FRONTEND_URL}/not-found`,
+            },
+        };
+        const response = await axios.post(url, orderBody, {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${accessToken}`,
+            },
+        });
+        const order = response.data;
+        const orderId = order.id;
+        const approveUrl = order.links.find((link) => link.rel === 'approve');
+        if (approveUrl) {
+            res.status(200).json({ orderId, approveUrl: approveUrl.href });
+        } else {
+            res.status(400).json({ error: 'Approval URL not found' });
+        }
     } catch (error) {
-        console.error('Failed to create order:', error);
-        res.status(500).json({ error: 'Failed to capture order.' });
+        res.status(500).json({ error: error.message });
     }
-});
+};

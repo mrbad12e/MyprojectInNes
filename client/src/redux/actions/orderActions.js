@@ -9,9 +9,23 @@ export const createOrder = (order) =>  async (dispatch) => {
     } catch (error) {
         dispatch({
             type: 'CREATE_ORDER_FAIL',
+            payload: error.response
+        })
+    }
+}
+export const captureOrder = (token) => async (dispatch) => {
+    try {
+        dispatch({ type: 'CAPTURE_ORDER_REQUEST' })
+        const config = { headers:  { 'Content-Type': 'application/json' } }
+        const { data } = await axios.post('/api/order/order/capture', { token: token }, {config})
+        dispatch({ type: 'CAPTURE_ORDER_SUCCESS', payload: data })
+    } catch (error) {
+        dispatch({
+            type: 'CAPTURE_ORDER_FAIL',
             payload: error.response.data.message
         })
     }
+
 }
 
 export const myOrders = () => async (dispatch) => {
@@ -44,12 +58,25 @@ export const returnRequest = (id, returnReason) => async (dispatch) => {
     try {
         dispatch({ type: 'REQUEST_RETURN_REQUEST' })
         const config = { headers:  { 'Content-Type': 'application/json' } }
-        const { data } = await axios.post(`/api/order/order/${id}/return`, { returnReason }, {config})
+        const { data } = await axios.post(`/api/order/order/${id}`, { returnReason }, {config})
 
         dispatch({ type: 'REQUEST_RETURN_SUCCESS', payload: data.order })
     } catch (error) {
         dispatch({
             type: 'REQUEST_RETURN_FAIL',
+            payload: error.response.data.message
+        })
+    }
+}
+
+export const confirmOrder = (id) => async (dispatch) => {
+    try {
+        dispatch({ type: 'CONFIRM_ORDER_REQUEST' })
+        const { data } = await axios.put(`/api/order/order/${id}`)
+        dispatch({ type: 'CONFIRM_ORDER_SUCCESS', payload: data.order })
+    } catch (error) {
+        dispatch({
+            type: 'CONFIRM_ORDER_FAIL',
             payload: error.response.data.message
         })
     }

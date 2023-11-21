@@ -51,3 +51,23 @@ export const deleteOrder = (id) => async (dispatch) =>{
         dispatch({ type: 'DELETE_ORDER_FAIL', payload: error.response.data.message })
     }
 };
+
+export const getAllReturns = () => async (dispatch) => {
+    try {
+        dispatch({ type: 'ALL_RETURNS_REQUEST' })
+        const { data } = await axios.get('/admin/returns')
+        dispatch({ type: 'ALL_RETURNS_SUCCESS', payload: data })
+    } catch (error) {
+        dispatch({ type: 'ALL_RETURNS_FAIL', payload: error.response.data.message })
+    }
+}
+
+export const refundOrder = (id) => async (dispatch) => {
+    try {
+        dispatch({ type: 'REFUND_ORDER_REQUEST' })
+        const { data } = await axios.post(`/admin/refund/${id}`)
+        dispatch({ type: 'REFUND_ORDER_SUCCESS', payload: data })
+    } catch (error) {
+        dispatch({ type: 'REFUND_ORDER_FAIL', payload: error.response.data.message })
+    }
+}
