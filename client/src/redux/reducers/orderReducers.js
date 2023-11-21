@@ -1,13 +1,10 @@
 export const newOrderReducer = (state = {}, action) => {
     switch (action.type) {
         case 'CREATE_ORDER_REQUEST':
-        case 'CAPTURE_ORDER_REQUEST':
             return { isFetching: true, ...state }
         case 'CREATE_ORDER_SUCCESS':
-        case 'CAPTURE_ORDER_SUCCESS':
-            return { isFetching: false, order: action.payload }
+            return { isFetching: false, link: action.payload }
         case 'CREATE_ORDER_FAIL':
-        case 'CAPTURE_ORDER_FAIL':
             return { isFetching: false, error: action.payload }
         default:
             return state

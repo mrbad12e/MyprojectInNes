@@ -21,7 +21,8 @@ const {
     deleteProduct,
 } = require('../controllers/product');
 const { getAllReturns } = require('../controllers/return');
-const { initiateRefund } = require('../controllers/refund');
+const { createRefund } = require('../controllers/refund');
+const { refundOrder } = require('../controllers/payment');
 
 router.route('/login').post(loginAdmin);
 router.route('/password/forgot').post(forgotPassword);
@@ -52,6 +53,6 @@ router
     .get(getSingleOrder);
 
 router.route('/returns').get(isAuthUser, authRoles('admin'), getAllReturns);
-router.route('/refund/:id').post(isAuthUser, authRoles('admin'), initiateRefund);
+router.route('/refund/:id').post(isAuthUser, authRoles('admin'), refundOrder, createRefund);
 
 module.exports = router;

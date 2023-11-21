@@ -4,28 +4,14 @@ export const createOrder = (order) =>  async (dispatch) => {
     try {
         dispatch({ type: 'CREATE_ORDER_REQUEST' })
         const config = { headers:  { 'Content-Type': 'application/json' } }
-        const { data } = await axios.post('/api/order/order/new', order, {config})
+        const { data } = await axios.post('/api/order/order/new', order, config)
         dispatch({ type: 'CREATE_ORDER_SUCCESS', payload: data })
     } catch (error) {
         dispatch({
             type: 'CREATE_ORDER_FAIL',
-            payload: error.response
+            payload: error
         })
     }
-}
-export const captureOrder = (token) => async (dispatch) => {
-    try {
-        dispatch({ type: 'CAPTURE_ORDER_REQUEST' })
-        const config = { headers:  { 'Content-Type': 'application/json' } }
-        const { data } = await axios.post('/api/order/order/capture', { token: token }, {config})
-        dispatch({ type: 'CAPTURE_ORDER_SUCCESS', payload: data })
-    } catch (error) {
-        dispatch({
-            type: 'CAPTURE_ORDER_FAIL',
-            payload: error.response.data.message
-        })
-    }
-
 }
 
 export const myOrders = () => async (dispatch) => {

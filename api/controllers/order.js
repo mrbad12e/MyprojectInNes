@@ -47,15 +47,15 @@ exports.newOrder = async (req, res, next) => {
             currentDate.getDate() + randomDays
         );
 
-        await sendEmail({
-            username: user.username,
-            email: user.email,
-            type: 'OrderConfirm',
-            subject: 'Order has been placed successfully',
-            items: order.orderItems,
-            total: order.totalPrice,
-            date: estimatedDeliveryDate.toDateString(),
-        });
+        // await sendEmail({
+        //     username: user.username,
+        //     email: user.email,
+        //     type: 'OrderConfirm',
+        //     subject: 'Order has been placed successfully',
+        //     items: order.orderItems,
+        //     total: order.totalPrice,
+        //     date: estimatedDeliveryDate.toDateString(),
+        // });
 
         res.status(200).json({
             success: true,
@@ -193,15 +193,15 @@ exports.updateOrder = async (req, res, next) => {
         currentDate.getDate() + randomDays
     );
 
-    await sendEmail({
-        username: order.user.username,
-        email: order.user.email,
-        type: 'OrderDelivered',
-        subject: 'Order has been delivered',
-        items: order.orderItems,
-        total: order.totalPrice,
-        date: estimatedDeliveryDate.toDateString(),
-    });
+    // await sendEmail({
+    //     username: order.user.username,
+    //     email: order.user.email,
+    //     type: 'OrderDelivered',
+    //     subject: 'Order has been delivered',
+    //     items: order.orderItems,
+    //     total: order.totalPrice,
+    //     date: estimatedDeliveryDate.toDateString(),
+    // });
 
     res.status(200).json({
         success: true,

@@ -49,11 +49,9 @@ const OrderTable = new mongoose.Schema(
         isRefunded: { type: Boolean, default: false },
         refundRequestedAt: Date,
         refundStatus: { type: String, default: 'Not Requested' },
-        refundInfo: {
-            id: String,
-            amount: Number,
-            status: String,
-            createdAt: Date,
+        refundid: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Refund',
         },
         refundedAt: Date,
     },

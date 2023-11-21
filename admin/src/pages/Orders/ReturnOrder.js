@@ -5,7 +5,6 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Box, Button, Grid, MenuItem, Paper, Select, Typography } from '@mui/material';
 import { Orders } from './Orders';
-import { PayPalButtons, PayPalScriptProvider } from '@paypal/react-paypal-js';
 import { getOrderDetail, refundOrder } from '../../redux/actions/orderActions';
 import { OrderItemsTable } from './OrderItemsTable';
 
@@ -14,12 +13,6 @@ const paperDesign = {
     display: 'flex',
     flexDirection: 'column',
     m: 2,
-};
-const statusOptions = ['Processing', 'Delivered', 'Shipped'];
-
-const initialOptions = {
-    clientId: 'AVe5WW3PC0WPLFESn6iIvLouPleDZz6jWYk7YS7XQLFjsAZYqYXpMkwiV7cPYyqRPsVgds88aSZG5-oO',
-    currency: 'USD',
 };
 
 function formatTime(inputTime) {
