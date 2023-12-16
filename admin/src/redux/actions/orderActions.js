@@ -71,3 +71,7 @@ export const refundOrder = (id) => async (dispatch) => {
         dispatch({ type: 'REFUND_ORDER_FAIL', payload: error.response.data.message })
     }
 }
+
+export const clearErrors = () => async (dispatch) => {
+    dispatch({ type: 'CLEAR_ERRORS' })
+}

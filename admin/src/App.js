@@ -2,7 +2,6 @@ import {BrowserRouter, Route, Routes} from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import React from 'react';
 import Login from './pages/User/Login';
-import { Profile } from './pages/User/Profile';
 import { Dashboard } from './pages/Dashboard/Dashboard';
 import { Navbar } from './components/Navbar/Navbar';
 import { CustomerTable } from './pages/Customers/CustomerTable';
@@ -14,19 +13,20 @@ import { OrderTable } from './pages/Orders/OrderTable';
 import { OrderDetail } from './pages/Orders/OrderDetail';
 import { ReturnTable } from './pages/Orders/ReturnTable';
 import { ReturnOrder } from './pages/Orders/ReturnOrder';
-
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export const App = () => {
     
-    const user = useSelector((state) => state.user.currentUser)
+    const user = useSelector((state) => state.user.user)
     console.log(useSelector((state) => state));
     
     return (
         <BrowserRouter>
             <Navbar/>
+            <ToastContainer/>
             <Routes>
                 <Route path='/' element={<Login/>}/>
-                <Route path='/me' element={<Profile/>}/>
                 <Route path='/dashboard' element={<Dashboard/>}/>
                 <Route path='/customers' element={<CustomerTable/>}/>
                 <Route path='/customer/:id' element={<CustomerDetail/>}/>

@@ -6,10 +6,11 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Button, Grid, Paper, TextField, Typography } from '@mui/material';
 import { CameraAlt, RemoveCircle } from '@mui/icons-material';
 import { Products } from './Products';
-import { deleteProduct, getProductDetail, updateProduct } from '../../redux/actions/productActions';
+import { clearErrors, deleteProduct, getProductDetail, updateProduct } from '../../redux/actions/productActions';
 import { InputTags } from '../../components/Tag/InputTags';
 import { ImgList } from '../../components/Image/List';
 import { VisuallyHiddenInput } from '../../components/VisuallyHiddenInput';
+import { toast } from 'react-toastify';
 
 const myForm = new FormData();
 
@@ -38,7 +39,10 @@ export const ProductDetail = () => {
     const [images, setImages] = useState([]);
     const [previewImages, setPreviewImages] = useState([]);
     useEffect(() => {
-        if (error) console.log(error);
+        if (error) {
+            toast.error(error);
+            dispatch(clearErrors());
+        }
         dispatch(getProductDetail(id));
     }, [dispatch, error, id]);
 

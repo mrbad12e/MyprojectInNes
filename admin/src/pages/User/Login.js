@@ -11,10 +11,11 @@ import {
 } from '@mui/material';
 import { LockOutlined } from '@mui/icons-material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { login } from '../../redux/actions/userActions';
+import { login, clearErrors } from '../../redux/actions/userActions';
 import { useDispatch, useSelector } from 'react-redux';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 // function Copyright(props) {
 //     return (
 //         <Typography variant='body2' color={'CaptionText'} align='center' {...props}>
@@ -40,13 +41,16 @@ const Login = () => {
         dispatch(login(email, password))
     };
     useEffect(() => {
-        if (error) toast.error(error);
+        if (error) {
+            toast.error(error);
+            dispatch(clearErrors());
+        }
         if (isAuthenticated) navigate('/dashboard');
     }, [dispatch, error, isAuthenticated, navigate]);
 
     return (
         <ThemeProvider theme={defaultTheme}>
-            <Container component={'main'} maxWidth="xs">
+            <Container component={'main'} maxWidth="xs"> 
                 <CssBaseline />
                 <Box sx={{ marginTop: 8, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>

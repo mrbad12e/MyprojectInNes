@@ -4,10 +4,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import Loader from '../../components/Loader/Loader';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { getOneUser, updateOneUser } from '../../redux/actions/userActions';
+import { clearErrors, getOneUser, updateOneUser } from '../../redux/actions/userActions';
 import { Avatar, Badge, Button, Grid, Paper, TextField, Typography } from '@mui/material';
 import { CameraAlt } from '@mui/icons-material';
 import { VisuallyHiddenInput } from '../../components/VisuallyHiddenInput';
+import { toast } from 'react-toastify';
 
 
 export const CustomerDetail = () => {
@@ -48,7 +49,10 @@ export const CustomerDetail = () => {
     };
 
     useEffect(() => {
-        if (error) console.log(error);
+        if (error) {
+            toast.error(error);
+            dispatch(clearErrors());
+        }
         dispatch(getOneUser(id));
     }, [dispatch, error, id]);
     return (

@@ -10,6 +10,8 @@ export const recentOrderReducers = (state = { recentOrders: [] }, action) => {
             };
         case 'RECENT_ORDER_FAIL':
             return { isFetching: false, error: action.payload };
+        case 'CLEAR_ERRORS':
+            return { ...state, error: null };
         default:
             return state;
     }
@@ -18,7 +20,7 @@ export const recentOrderReducers = (state = { recentOrders: [] }, action) => {
 export const allOrdersReducer = (state = { orders: [] }, action) => {
     switch (action.type) {
         case 'ALL_ORDERS_REQUEST':
-            return { isFetching: true }
+            return { isFetching: true };
         case 'ALL_ORDERS_SUCCESS':
             return {
                 isFetching: false,
@@ -26,42 +28,46 @@ export const allOrdersReducer = (state = { orders: [] }, action) => {
                 filteredOrdersCount: action.payload.filteredOrdersCount,
                 totalAmount: action.payload.totalAmount,
                 resultPerPage: action.payload.resultPerPage,
-            }
+            };
         case 'ALL_ORDERS_SUCCESS':
-            return{
+            return {
                 isFetching: false,
-                error: action.payload
-            }
+                error: action.payload,
+            };
+        case 'CLEAR_ERRORS':
+            return { ...state, error: null };
         default:
-            return state
+            return state;
     }
-}
+};
 
 export const orderDetailReducer = (state = { order: {} }, action) => {
     switch (action.type) {
         case 'ORDER_DETAIL_REQUEST':
         case 'UPDATE_ORDER_REQUEST':
         case 'DELETE_ORDER_REQUEST':
-            return { isFetching: true, ...state }
+            return { isFetching: true, ...state };
         case 'ORDER_DETAIL_SUCCESS':
         case 'UPDATE_ORDER_SUCCESS':
         case 'DELETE_ORDER_SUCCESS':
-            return { isFetching: false, order: action.payload.order }
+            return { isFetching: false, order: action.payload.order };
         case 'ORDER_DETAIL_FAIL':
         case 'UPDATE_ORDER_FAIL':
         case 'DELETE_ORDER_FAIL':
-            return { isFetching: false, error: action.payload }
+            return { isFetching: false, error: action.payload };
         case 'DELETE_ORDER_RESET':
-            return { isFetching: false, order: {} }
+            return { isFetching: false, order: {} };
+        case 'CLEAR_ERRORS':
+            return { ...state, error: null };
         default:
-            return state
+            return state;
     }
-}
+};
 
 export const allReturnsReducer = (state = { returns: [] }, action) => {
     switch (action.type) {
         case 'ALL_RETURNS_REQUEST':
-            return { isFetching: true, ...state }
+            return { isFetching: true, ...state };
         case 'ALL_RETURNS_SUCCESS':
             return {
                 isFetching: false,
@@ -69,25 +75,29 @@ export const allReturnsReducer = (state = { returns: [] }, action) => {
                 returnsCount: action.payload.returnsCount,
                 filteredReturnsCount: action.payload.filteredReturnsCount,
                 resultPerPage: action.payload.resultPerPage,
-            }
+            };
         case 'ALL_RETURNS_FAIL':
-            return { isFetching: false, error: action.payload }
+            return { isFetching: false, error: action.payload };
+        case 'CLEAR_ERRORS':
+            return { ...state, error: null };
         default:
-            return state
+            return state;
     }
-}
+};
 
 export const refundOrderReducer = (state = {}, action) => {
     switch (action.type) {
         case 'REFUND_ORDER_REQUEST':
-            return { isFetching: true, ...state }
+            return { isFetching: true, ...state };
         case 'REFUND_ORDER_SUCCESS':
-            return { isFetching: false, success: action.payload }
+            return { isFetching: false, success: action.payload };
         case 'REFUND_ORDER_FAIL':
-            return { isFetching: false, error: action.payload }
+            return { isFetching: false, error: action.payload };
         case 'REFUND_ORDER_RESET':
-            return {}
+            return {};
+        case 'CLEAR_ERRORS':
+            return { ...state, error: null };
         default:
-            return state
+            return state;
     }
-}
+};

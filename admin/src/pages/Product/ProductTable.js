@@ -5,8 +5,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import Loader from '../../components/Loader/Loader';
 import { Products } from './Products';
-import { getProduct } from '../../redux/actions/productActions';
+import { clearErrors, getProduct } from '../../redux/actions/productActions';
 import { Add } from '@mui/icons-material';
+import { toast } from 'react-toastify';
 export const ProductTable = () => {
     const dispatch = useDispatch();
     const { keyword } = useParams();
@@ -17,12 +18,16 @@ export const ProductTable = () => {
     );
     const handlePageChange = (e, p) => setCurrentPage(p);
     useEffect(() => {
-        if (error) console.log(error);
+        if (error) {
+            toast.error(error);
+            dispatch(clearErrors());
+        }
         dispatch(getProduct(keyword, currentPage));
     }, [dispatch, keyword, currentPage, error]);
 
     let count = filteredProductsCount;
     let countPages = Math.ceil(count / resultPerPage);
+    console.log(resultPerPage);
     return (
         <Products>
             <Grid item xs={12}>

@@ -30,7 +30,8 @@ const UserTable = new mongoose.Schema(
             default: 'user'
         },
         avatar: {
-            type: String, default: 'storage/default/Profile.png'
+            type: String, 
+            // default: 'storage/default/Profile.png'
         },
         resetPasswordToken: { type: String, default: null, select: false },
         resetPasswordExpire: { type: Date, default: null, select: false }, 

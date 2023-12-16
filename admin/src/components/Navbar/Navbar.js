@@ -74,7 +74,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 export const Navbar = () => {
     const navigate = useNavigate()
-    const user = useSelector((state) => state.user.currentUser);
+    const user = useSelector((state) => state.user.user);
     const isAuthenticated = useSelector((state) => state.user.isAuthenticated)
     const theme = useTheme();
     const [open, setOpen] = useState(false);

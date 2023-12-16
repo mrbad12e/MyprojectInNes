@@ -9,7 +9,6 @@ exports.createRefund = async (req, res, next) => {
                 message: 'Order not found'
             });
         }
-
         if (order.returns.length === 0) {
             return res.status(400).json({
                 success: false,

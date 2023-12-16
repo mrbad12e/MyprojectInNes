@@ -5,7 +5,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import Loader from '../../components/Loader/Loader';
 import { Orders } from './Orders'
-import { getAllOrders } from '../../redux/actions/orderActions';
+import { clearErrors, getAllOrders } from '../../redux/actions/orderActions';
+import { toast } from 'react-toastify';
 
 export const OrderTable = () => {
     const dispatch = useDispatch();
@@ -15,7 +16,10 @@ export const OrderTable = () => {
     const { orders, isFetching, error, resultPerPage, filteredOrdersCount } = useSelector((state) => state.allOrders)
     const handlePageChange = (e, p) => setCurrentPage(p);
     useEffect(() => {
-        if (error) console.log(error);
+        if (error) {
+            toast.error(error);
+            dispatch(clearErrors());
+        }
         dispatch(getAllOrders(keyword, currentPage));
     }, [dispatch, keyword, currentPage, error]);
 

@@ -88,3 +88,7 @@ export const updateOneUser = (id, form) => async (dispatch) => {
         console.log(error);
     }
 }
+
+export const clearErrors = () => async (dispatch) => {
+    dispatch({ type: 'CLEAR_ERRORS' })
+}

@@ -12,27 +12,27 @@ export const userReducers = (state = { user: {} }, action) => {
                 ...state,
                 isFetching: false,
                 isAuthenticated: true,
-                currentUser: action.payload,
+                user: action.payload,
             };
         case 'LOGOUT_SUCCESS':
             return {
                 isFetching: false,
                 isAuthenticated: false,
-                currentUser: null,
+                user: null,
             };
         case 'LOGIN_FAIL':
             return {
                 ...state,
                 isFetching: false,
                 isAuthenticated: false,
-                currentUser: null,
+                user: null,
                 error: action.payload,
             };
         case 'LOAD_USER_FAIL':
             return {
                 isFetching: false,
                 isAuthenticated: false,
-                currentUser: null,
+                user: null,
                 error: action.payload,
             };
         case 'LOGOUT_FAIL':
@@ -41,6 +41,8 @@ export const userReducers = (state = { user: {} }, action) => {
                 isFetching: false,
                 error: action.payload,
             };
+            case 'CLEAR_ERRORS':
+                return { ...state, error: null}
         default:
             return state;
     }
@@ -68,6 +70,8 @@ export const profileReducer = (state = {}, action) => {
                 isFetching: false,
                 error: action.payload,
             };
+        case 'CLEAR_ERRORS':
+            return { ...state, error: null };
         default:
             return state;
     }
@@ -128,6 +132,8 @@ export const allUsersReducers = (state = { users: [] }, action) => {
                 isFetching: false,
                 error: action.payload,
             };
+        case 'CLEAR_ERRORS':
+            return { ...state, error: null };
         default:
             return state;
     }
@@ -152,6 +158,8 @@ export const userActionReducer = (state = { user: {} }, action) => {
                 isFetching: false,
                 error: action.payload
             }
+        case 'CLEAR_ERRORS':
+            return { ...state, error: null }
         default:
             return state
     }

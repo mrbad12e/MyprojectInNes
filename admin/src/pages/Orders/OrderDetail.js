@@ -4,9 +4,10 @@ import Loader from '../../components/Loader/Loader';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button, Grid, MenuItem, Paper, Select, Typography } from '@mui/material';
-import { getOrderDetail, updateOrderDetail } from '../../redux/actions/orderActions';
+import { clearErrors, getOrderDetail, updateOrderDetail } from '../../redux/actions/orderActions';
 import { Orders } from './Orders';
 import { OrderItemsTable } from './OrderItemsTable';
+import { toast } from 'react-toastify';
 
 const paperDesign = {
     p: 2,
@@ -47,7 +48,10 @@ export const OrderDetail = () => {
     const address = `${order.shippingInfo.address}, ${order.shippingInfo.city}, ${order.shippingInfo.country}`;
     const [status, setStatus] = useState('');
     useEffect(() => {
-        if (error) console.log(error);
+        if (error) {
+            toast.error(error);
+            dispatch(clearErrors());
+        }
         dispatch(getOrderDetail(id));
     }, [dispatch, error, id]);
 

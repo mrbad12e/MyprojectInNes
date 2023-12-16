@@ -6,7 +6,7 @@ import { InputTags } from "../../components/Tag/InputTags";
 import { ImgList } from "../../components/Image/List";
 import { VisuallyHiddenInput } from "../../components/VisuallyHiddenInput";
 import { CameraAlt, RemoveCircle } from "@mui/icons-material";
-import { createProduct } from "../../redux/actions/productActions";
+import { clearErrors, createProduct } from "../../redux/actions/productActions";
 import { Title } from "../../components/Title/Title";
 import Loader from "../../components/Loader/Loader";
 import { useNavigate } from "react-router-dom";
@@ -15,8 +15,8 @@ const myForm = new FormData()
 
 function addArray(data, field) {
     if (data.length <= 0) myForm.set(`${field}`, [])
-    data.forEach((vdata) => {
-        myForm.append(`${field}`, vdata)
+    data.forEach((vdata, index) => {
+        myForm.append(`${field}[${index}]`, vdata)
     });
 }
 
@@ -37,7 +37,10 @@ export const CreateProduct = () => {
     const [previewImages, setPreviewImages] = useState([]);
 
     useEffect(() => {
-        if (error) console.log(error)
+        if (error) {
+            toast.error(error);
+            // dispatch(clearErrors());
+        }
         if (success) dispatch({ type: 'CREATE_PRODUCT_RESET' })
     }, [dispatch, error, success])
 

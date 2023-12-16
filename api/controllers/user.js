@@ -146,66 +146,77 @@ exports.forgotPassword = async (req, res, next) => {
 };
 
 exports.resetPassword = async (req, res, next) => {
-    const resetPasswordToken = Crypto.createHash('sha256').update(req.params.token).digest('hex');
-    console.log(resetPasswordToken);
-    const user = await User.findOne({
-        resetPasswordToken,
-        resetPasswordExpire: { $gt: Date.now() },
-    });
+    try {
+        const resetPasswordToken = Crypto.createHash('sha256').update(req.params.token).digest('hex');
+        const user = await User.findOne({
+            resetPasswordToken,
+            resetPasswordExpire: { $gt: Date.now() },
+        });
 
-    if (!user) {
-        return res.status(400).json({
+        if (!user) {
+            return res.status(400).json({
+                success: false,
+                message: 'Reset Password Token in invalid or has been expired!',
+            });
+        }
+
+        if (req.body.password !== req.body.confirmPassword) {
+            return res.status(400).json({
+                success: false,
+                message: 'Password does not match!',
+            });
+        }
+
+        user.password = req.body.password;
+        user.resetPasswordToken = undefined;
+        user.resetPasswordExpire = undefined;
+
+        await user.save();
+        let token = jwt.sign(
+            {
+                id: user._id,
+                name: user.username,
+                email: user.email,
+            },
+            process.env.JWT_SECRET_KEY
+        );
+        const options = {
+            expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+            httpOnly: true,
+        };
+
+        res.status(200).cookie('token', token, options).json({
+            success: true,
+            user,
+        });
+    } catch (error) {
+        res.status(500).json({
             success: false,
-            message: 'Reset Password Token in invalid or has been expired!',
+            message: error.message,
         });
     }
-
-    if (req.body.password !== req.body.confirmPassword) {
-        return res.status(400).json({
-            success: false,
-            message: 'Password does not match!',
-        });
-    }
-
-    user.password = req.body.password;
-    user.resetPasswordToken = undefined;
-    user.resetPasswordExpire = undefined;
-
-    await user.save();
-
-    let token = jwt.sign(
-        {
-            id: user._id,
-            name: user.username,
-            email: user.email,
-        },
-        process.env.JWT_SECRET_KEY
-    );
-
-    const options = {
-        expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
-        httpOnly: true,
-    };
-
-    res.status(200).cookie('token', token, options).json({
-        success: true,
-        user,
-    });
 };
 
 exports.getUserDetails = async (req, res, next) => {
-    const user = await User.findById(req.user.id);
-    res.status(200).json({
-        success: true,
-        user,
-    });
+    try {
+        const user = await User.findById(req.user.id);
+        res.status(200).json({
+            success: true,
+            user,
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message,
+        });
+    }
 };
 
 exports.updatePassword = async (req, res, next) => {
     try {
         const user = await User.findById(req.user.id).select('+password');
         const isPasswordMatched = await user.comparePassword(req.body.oldPassword);
-        
+
         if (!isPasswordMatched) {
             return res.status(400).json({
                 success: false,
@@ -249,6 +260,30 @@ exports.updatePassword = async (req, res, next) => {
         });
     }
 };
+
+exports.updateProfile = async (req, res, next) => {
+    try {
+        const newUserData = {
+            email: req.body.email,
+            avatar: req.file.path,
+        };
+        const user = await User.findByIdAndUpdate(req.user.id, newUserData, {
+            new: true,
+            runValidators: true,
+            useFindAndModify: false,
+        });
+
+        res.status(200).json({
+            success: true,
+            user,
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message,
+        });
+    }
+}
 
 // admin
 exports.loginAdmin = async (req, res, next) => {
@@ -308,69 +343,88 @@ exports.loginAdmin = async (req, res, next) => {
     }
 };
 exports.getSingleUser = async (req, res, next) => {
-    const user = await User.findById(req.params.id);
-
-    if (!user) {
-        return res.status(400).json({
+    try {
+        const user = await User.findById(req.params.id);
+        if (!user) {
+            return res.status(400).json({
+                success: false,
+                message: `User does not exist with Id: ${req.params.id}`,
+            });
+        }
+        res.status(200).json({
+            success: true,
+            user,
+        });
+    } catch (error) {
+        res.status(500).json({
             success: false,
-            message: `User does not exist with Id: ${req.params.id}`,
+            message: error.message,
         });
     }
-
-    res.status(200).json({
-        success: true,
-        user,
-    });
 };
 
 exports.getAllUsers = async (req, res, next) => {
-    const resultPerPage = process.env.ADMIN_RESULT_PER_PAGE;
-    const userCount = await User.countDocuments();
-    const apifeature = new ApiFeatures(User.find().select('_id username email role'), req.query).search().filter();
+    try {
+        const resultPerPage = process.env.ADMIN_RESULT_PER_PAGE;
+        const userCount = await User.countDocuments();
+        const apifeature = new ApiFeatures(User.find().select('_id username email role'), req.query).search().filter();
 
-    let users = await apifeature.query;
-    let filteredUsersCount = users.length;
-    apifeature.pagination(resultPerPage);
-    users = await apifeature.query.clone();
-    res.json({
-        success: true,
-        users,
-        userCount,
-        resultPerPage,
-        filteredUsersCount,
-    });
+        let users = await apifeature.query;
+        let filteredUsersCount = users.length;
+        apifeature.pagination(resultPerPage);
+        users = await apifeature.query.clone();
+        res.json({
+            success: true,
+            users,
+            userCount,
+            resultPerPage,
+            filteredUsersCount,
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message,
+        });
+    }
 };
 
 exports.updateUser = async (req, res, next) => {
-    const newUserData = {
-        username: req.body.username,
-        email: req.body.email,
-        role: req.body.role,
-        avatar: req.file.path
-    };
-    const user = await User.findByIdAndUpdate(req.params.id, newUserData, {
-        new: true,
-        runValidators: true,
-        useFindAndModify: false,
-    });
+    try {
+        const newUserData = {
+            username: req.body.username,
+            email: req.body.email,
+            role: req.body.role,
+            avatar: req.file.path,
+        };
+        const user = await User.findByIdAndUpdate(req.params.id, newUserData, {
+            new: true,
+            runValidators: true,
+            useFindAndModify: false,
+        });
 
-    res.status(200).json({
-        success: true,
-        user,
-    });
+        res.status(200).json({
+            success: true,
+            user,
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message,
+        });
+    }
 };
 
 exports.deleteUser = async (req, res, next) => {
     try {
-        await User.findByIdAndDelete(req.body.id)
+        await User.findByIdAndDelete(req.body.id);
         res.status(200).json({
             success: true,
-            message: 'User has been deleted'
-        })
+            message: 'User has been deleted',
+        });
     } catch (error) {
         res.status(400).json({
             success: false,
-            message: error
-        })
+            message: error,
+        });
     }
-}
+};

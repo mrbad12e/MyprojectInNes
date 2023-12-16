@@ -7,7 +7,9 @@ class ApiFeatures {
         const keyword = this.queryStr.keyword
             ? { $or: [
                 { title: { $regex: this.queryStr.keyword, $options: 'i' }},
-                { username: {$regex: this.queryStr.keyword, $options: 'i' }}
+                { username: {$regex: this.queryStr.keyword, $options: 'i' }},
+                { description: { $regex: this.queryStr.keyword, $options: 'i' }},
+                { categories: { $regex: this.queryStr.keyword, $options: 'i' }}
             ]} : {}
         this.query = this.query.find({ ...keyword })
         return this

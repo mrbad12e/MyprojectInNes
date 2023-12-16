@@ -7,6 +7,7 @@ export const getProduct =
             dispatch({ type: 'ALL_PRODUCT_REQUEST' });
             let link = `/admin/products?keyword=${keyword}&page=${currentPage}`;
             const { data } = await axios.get(link);
+            console.log(data);
             dispatch({
                 type: 'ALL_PRODUCT_SUCCESS',
                 payload: data
@@ -64,4 +65,8 @@ export const deleteProduct = (id) => async (dispatch) => {
     } catch (error) {
         dispatch({ type: 'DELETE_PRODUCT_FAIL', payload: error.response.data.message })
     }
+}
+
+export const clearErrors = () => async (dispatch) => {
+    dispatch({ type: 'CLEAR_ERRORS' })
 }

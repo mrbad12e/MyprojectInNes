@@ -6,6 +6,7 @@ import { useParams } from 'react-router-dom';
 import Loader from '../../components/Loader/Loader';
 import { getAllUsers } from '../../redux/actions/userActions';
 import { Customers } from './Customers';
+import { toast } from 'react-toastify';
 
 export const CustomerTable = () => {
     const dispatch = useDispatch();
@@ -17,7 +18,10 @@ export const CustomerTable = () => {
     );
     const handlePageChange = (e, p) => setCurrentPage(p);
     useEffect(() => {
-        if (error) console.log(error);
+        if (error) {
+            toast.error(error);
+            dispatch(clearErrors());
+        }
         dispatch(getAllUsers(keyword, currentPage));
     }, [dispatch, keyword, currentPage]);
 

@@ -4,7 +4,8 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Loader from '../../components/Loader/Loader';
 import { Orders } from './Orders'
-import { getAllReturns } from '../../redux/actions/orderActions';
+import { clearErrors, getAllReturns } from '../../redux/actions/orderActions';
+import { toast } from 'react-toastify';
 
 export const ReturnTable = () => {
     const dispatch = useDispatch();
@@ -13,7 +14,10 @@ export const ReturnTable = () => {
     const { returns, isFetching, error, resultPerPage, filteredReturnsCount } = useSelector((state) => state.allReturns)
     const handlePageChange = (e, p) => setCurrentPage(p);
     useEffect(() => {
-        if (error) console.log(error);
+        if (error) {
+            toast.error(error);
+            dispatch(clearErrors());
+        }
         dispatch(getAllReturns())
     }, [dispatch, error]);
 
