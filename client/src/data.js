@@ -1,3 +1,4 @@
+import { Store, TrendingUp, Star } from '@mui/icons-material'
 export const sliderItems = [
     {
         id: 1,
@@ -27,19 +28,22 @@ export const categories = [
         id: 1,
         img: 'https://shop.minecraft.net/cdn/shop/files/MC-HP-Update_q2_22-KIDS-1.gif?v=1646166605',
         title: 'ALL PRODUCTS',
-        cat: "trend"
+        cat: "T-shirt",
+        icon: <Store />
     },
     {
         id: 2,
         img: 'https://shop.minecraft.net/cdn/shop/files/MC-HP-Update_q2_22-LIGHTS-1.gif?v=1646166604',
         title: 'TRENDING PRODUCTS',
-        cat: "hoodies"
+        cat: "trending",
+        icon: <TrendingUp />
     },
     {
         id: 3,
         img: 'https://shop.minecraft.net/cdn/shop/files/MC-HP-Update_q2_22-PLUSH-2_1_1.png?v=1648059350',
         title: 'MOST RATED',
-        cat: "shirts"
+        cat: "hoodie",
+        icon: <Star />
     }
 ];
 

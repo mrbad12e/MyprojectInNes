@@ -1,13 +1,12 @@
-import { LocationCity, Phone, Home, PinDrop, Public, TransferWithinAStation } from '@mui/icons-material';
+import { Phone, Home } from '@mui/icons-material';
 import { Country, State } from 'country-state-city';
-import React, { Fragment, useState } from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { saveShippingInfo } from '../../redux/actions/cartActions';
 import CheckoutSteps from './CheckoutSteps';
 import {
-    Box,
     Container,
     Typography,
     Input,
@@ -17,7 +16,10 @@ import {
     Select,
     MenuItem,
     Button,
+    Grid,
+    Paper,
 } from '@mui/material';
+import { teal } from '@mui/material/colors';
 
 const Shipping = () => {
     const dispatch = useDispatch();
@@ -25,12 +27,12 @@ const Shipping = () => {
     const navigate = useNavigate();
 
     const [address, setAddress] = useState(shippingInfo.address);
-    const [city, setCity] = useState(shippingInfo.city);
-    const [state, setState] = useState(shippingInfo.state);
-    const [country, setCountry] = useState(shippingInfo.country);
-    const [pinCode, setPinCode] = useState(shippingInfo.pinCode);
+    const [selectedCountry, setSelectedCountry] = useState(shippingInfo.country ? shippingInfo.country : '');
+    const [selectedState, setSelectedState] = useState(shippingInfo.state ? shippingInfo.state : '');
     const [phoneNumber, setPhoneNumber] = useState(shippingInfo.phoneNumber);
 
+    const contries = Country.getAllCountries();
+    const states = selectedCountry ? State.getStatesOfCountry(selectedCountry) : [];
     const shippingSubmit = (e) => {
         e.preventDefault();
 
@@ -38,18 +40,24 @@ const Shipping = () => {
             toast.success('Phone Number should be 10 digits long');
             return;
         }
-        dispatch(saveShippingInfo({ address, city, state, country, pinCode, phoneNumber }));
+        dispatch(saveShippingInfo({ 
+            address: address, 
+            country: selectedCountry,
+            state: selectedState, 
+            phoneNumber: phoneNumber }));
         navigate('/cart/checkout/confirm');
     };
 
     return (
-        <Fragment>
-            <CheckoutSteps activeStep={0} />
-
-            <Container sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', my: '24px' }}>
-                <Typography variant="h3">Shipping Details</Typography>
-
-                <form encType="multipart/form-data" onSubmit={shippingSubmit} style={{}}>
+        <Container maxWidth="xl">
+            <Grid container justifyContent={'center'}>
+                <CheckoutSteps activeStep={0} />
+            </Grid>
+            <Grid container justifyContent={'center'}>
+                <Paper elevation={3} sx={{ p: 3 }}>
+                    <Typography variant="h3" textAlign={'center'}>
+                        Shipping Details
+                    </Typography>
                     <FormControl variant="standard" fullWidth sx={{ m: 1 }}>
                         <InputLabel>Enter your address</InputLabel>
                         <Input
@@ -58,32 +66,6 @@ const Shipping = () => {
                             endAdornment={
                                 <InputAdornment position="start">
                                     <Home />
-                                </InputAdornment>
-                            }
-                            required
-                        />
-                    </FormControl>
-                    <FormControl variant="standard" fullWidth sx={{ m: 1 }}>
-                        <InputLabel>Enter your city</InputLabel>
-                        <Input
-                            value={city}
-                            onChange={(e) => setCity(e.target.value)}
-                            endAdornment={
-                                <InputAdornment position="start">
-                                    <LocationCity />
-                                </InputAdornment>
-                            }
-                            required
-                        />
-                    </FormControl>
-                    <FormControl variant="standard" fullWidth sx={{ m: 1 }}>
-                        <InputLabel>PinCode</InputLabel>
-                        <Input
-                            value={pinCode}
-                            onChange={(e) => setPinCode(e.target.value)}
-                            endAdornment={
-                                <InputAdornment position="start">
-                                    <PinDrop />
                                 </InputAdornment>
                             }
                             required
@@ -102,38 +84,47 @@ const Shipping = () => {
                             required
                         />
                     </FormControl>
-                    <Box display={'flex'} mb={2}>
-                        <FormControl variant="standard" fullWidth sx={{ m: 1 }}>
-                            <InputLabel>Country</InputLabel>
-                            <Select required value={country} onChange={(e) => setCountry(e.target.value)}>
-                                {Country &&
-                                    Country.getAllCountries().map((item) => (
-                                        <MenuItem key={item.isoCode} value={item.isoCode}>
-                                            {item.name}
+                    <Grid container spacing={1}>
+                        <Grid item xs={6}>
+                            <FormControl variant="standard" fullWidth sx={{ m: 1 }}>
+                                <InputLabel>Country</InputLabel>
+                                <Select value={selectedCountry} onChange={(e) => setSelectedCountry(e.target.value)}>
+                                    {contries.map((country) => (
+                                        <MenuItem key={country.isoCode} value={country.isoCode}>
+                                            {country.name}
                                         </MenuItem>
                                     ))}
-                            </Select>
-                        </FormControl>
-                        <FormControl variant="standard" fullWidth sx={{ m: 1 }}>
-                            <InputLabel>State</InputLabel>
-                            <Select required value={state} onChange={(e) => setState(e.target.value)}>
-                                {State &&
-                                    State.getStatesOfCountry(country).map((item) => (
-                                        <MenuItem key={item.isoCode} value={item.isoCode}>
-                                            {item.name}
-                                        </MenuItem>
-                                    ))}
-                            </Select>
-                        </FormControl>
-                    </Box>
-                    <Box display={'flex'} justifyContent={'center'}>
-                        <Button type="submit" disabled={state ? false : true} variant="contained">
+                                </Select>
+                            </FormControl>
+                        </Grid>
+                        {selectedCountry ? (
+                            <Grid item xs={6}>
+                                <FormControl variant="standard" defaultValue='' fullWidth sx={{ m: 1 }}>
+                                    <InputLabel>State</InputLabel>
+                                    <Select value={selectedState} onChange={(e) => setSelectedState(e.target.value)}>
+                                        {states.map((state) => (
+                                            <MenuItem key={state.isoCode} value={state.name}>
+                                                {state.name}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+                        ) : null}
+                    </Grid>
+                    <Grid container justifyContent={'center'}>
+                        <Button
+                            disabled={selectedState ? false : true}
+                            variant="contained"
+                            onClick={shippingSubmit}
+                            sx={{ color: teal[50], bgcolor: teal[500], m: 1 }}
+                        >
                             Continue
                         </Button>
-                    </Box>
-                </form>
-            </Container>
-        </Fragment>
+                    </Grid>
+                </Paper>
+            </Grid>
+        </Container>
     );
 };
 

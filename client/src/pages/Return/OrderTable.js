@@ -1,41 +1,37 @@
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Paper } from '@mui/material';
-import { Fragment } from 'react';
+import { Table, TableBody, TableCell, TableHead, TableRow, Paper } from '@mui/material';
 
 export const OrderTable = ({ items }) => {
     const backend_url = process.env.BACKEND_URL;
     return (
-        <Fragment>
-            <Typography variant="h6">Order Items</Typography>
-            <TableContainer component={Paper}>
-                <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell variant='head'>Image</TableCell>
-                            <TableCell>Name</TableCell>
-                            <TableCell>Quantity</TableCell>
-                            <TableCell>Price</TableCell>
-                            <TableCell>Subtotal</TableCell>
+        <Paper elevation={3} sx={{m:2}}>
+            <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                <TableHead >
+                    <TableRow>
+                        <TableCell sx={{ fontWeight: 600, fontSize: 20 }}>Image</TableCell>
+                        <TableCell sx={{ fontWeight: 600, fontSize: 20 }}>Name</TableCell>
+                        <TableCell sx={{ fontWeight: 600, fontSize: 20 }}>Quantity</TableCell>
+                        <TableCell sx={{ fontWeight: 600, fontSize: 20 }}>Price</TableCell>
+                        <TableCell sx={{ fontWeight: 600, fontSize: 20 }}>Subtotal</TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    {items.map((item) => (
+                        <TableRow key={item._id}>
+                            <TableCell component="th" scope="row" sx={{ p: 0 }}>
+                                <img
+                                    src={`${backend_url}/${item.images.replace(/\\/g, '/')}`}
+                                    alt={item.name}
+                                    width="100vw"
+                                />
+                            </TableCell>
+                            <TableCell>{item.title}</TableCell>
+                            <TableCell>{item.quantity}</TableCell>
+                            <TableCell>${item.price}</TableCell>
+                            <TableCell>${item.price * item.quantity}</TableCell>
                         </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {items.map((item) => (
-                            <TableRow key={item._id}>
-                                <TableCell component="th" scope="row">
-                                    <img
-                                        src={`${backend_url}/${item.images.replace(/\\/g, '/')}`}
-                                        alt={item.name}
-                                        width="50"
-                                    />
-                                </TableCell>
-                                <TableCell>{item.title}</TableCell>
-                                <TableCell>{item.quantity}</TableCell>
-                                <TableCell>${item.price}</TableCell>
-                                <TableCell>${item.price * item.quantity}</TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-        </Fragment>
+                    ))}
+                </TableBody>
+            </Table>
+        </Paper>
     );
 };

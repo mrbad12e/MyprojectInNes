@@ -1,30 +1,21 @@
-import styled from 'styled-components';
-import { mobile } from '../../responsive';
 import { useState, useEffect, Fragment } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { forgotPassword } from '../../redux/actions/userActions';
 import { MailOutline } from '@mui/icons-material';
-import { Input, InputAdornment, InputLabel, FormControl, Button, Typography, Box } from '@mui/material';
+import {
+    Input,
+    InputAdornment,
+    InputLabel,
+    FormControl,
+    Button,
+    Typography,
+    Container,
+    Paper,
+    Grid,
+} from '@mui/material';
 import { toast } from 'react-toastify';
 import Loader from '../../components/Loader/Loader';
-const Container = styled.div`
-    width: 100%;
-    height: 100vh;
-    background: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)),
-        url('https://shop.minecraft.net/cdn/shop/files/Minecraft-Birthday_2022-Desktop_HomepageBanner-1920x1125_1.jpg?v=1684339266')
-            center;
-    background-size: cover;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-`;
-
-const Wrapper = styled.div`
-    width: 25%;
-    padding: 20px;
-    background-color: #f0f7ff;
-    ${mobile({ width: '75%' })}
-`;
+import { teal } from '@mui/material/colors';
 
 const ForgotPassword = () => {
     const dispatch = useDispatch();
@@ -38,17 +29,32 @@ const ForgotPassword = () => {
     };
 
     useEffect(() => {
-        if (error) toast.error(error);
+        if (error) {
+            toast.error(error);
+        }
         if (message) toast.success(message);
     }, [dispatch, error, message]);
     return (
-        <Fragment>
+        <Container
+            maxWidth={false}
+            style={{
+                background:
+                    'linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)), url("https://shop.minecraft.net/cdn/shop/files/Minecraft-Birthday_2022-Desktop_HomepageBanner-1920x1125_1.jpg?v=1684339266") center',
+                height: '100vh',
+                backgroundSize: 'cover',
+                justifyContent: 'center',
+                alignItems: 'center',
+                display: 'flex',
+            }}
+        >
             {isFetching ? (
                 <Loader />
             ) : (
-                <Container>
-                    <Wrapper>
-                        <Typography variant="h5">FORGOT PASSWORD</Typography>
+                <Container maxWidth="md">
+                    <Paper elevation={3} sx={{ p: 3 }}>
+                        <Typography variant="h4" textAlign={'center'}>
+                            FORGOT PASSWORD
+                        </Typography>
                         <form onSubmit={handleSubmit}>
                             <FormControl variant="standard" fullWidth sx={{ m: 1 }}>
                                 <InputLabel>Enter your email</InputLabel>
@@ -62,14 +68,16 @@ const ForgotPassword = () => {
                                     }
                                 />
                             </FormControl>
-                            <Box>
-                                <Button type="submit">CONFIRM</Button>
-                            </Box>
+                            <Grid container justifyContent={'center'} my={2}>
+                                <Button type="submit" variant="contained" sx={{ color: teal[50], bgcolor: teal[500] }}>
+                                    CONFIRM
+                                </Button>
+                            </Grid>
                         </form>
-                    </Wrapper>
+                    </Paper>
                 </Container>
             )}
-        </Fragment>
+        </Container>
     );
 };
 

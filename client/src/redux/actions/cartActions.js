@@ -34,3 +34,7 @@ export const clearCart = () => dispatch => {
 
     localStorage.removeItem('cartItems');
 };
+
+export const clearErrors = () => async (dispatch) => {
+    dispatch({ type: 'CLEAR_ERRORS' })
+}

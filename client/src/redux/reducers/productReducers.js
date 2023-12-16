@@ -11,6 +11,8 @@ export const productsReducer = (state = { products: [] }, action) => {
             }
         case 'ALL_PRODUCT_FAIL':
             return { isFetching: false, error: action.payload }
+        case 'CLEAR_ERRORS':
+            return { ...state, error: null }
         default:
             return state
     }
@@ -24,6 +26,8 @@ export const productDetailReducer = (state = { product: {} }, action) => {
             return { isFetching: false, product: action.payload }
         case 'PRODUCT_DETAIL_FAIL':
             return { isFetching: false, error: action.payload }
+        case 'CLEAR_ERRORS':
+            return { ...state, error: null }
         default:
             return state
     }

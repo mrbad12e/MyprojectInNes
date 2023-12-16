@@ -1,6 +1,8 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 // Pages
 import Home from './pages/Home/Home';
 import Product from './pages/Product/Product';
@@ -25,14 +27,16 @@ import { AddProfile } from './pages/User/AddProfile';
 import { OrderDetail } from './pages/Return/OrderDetail';
 import { Return } from './pages/Return/Return';
 import { NotFound } from './pages/NotFound';
+import FloatingIcon from './components/FloatingIcon/FloatingIcon';
 
 export const App = () => {
-    const user = useSelector((state) => state.user.currentUser);
+    const user = useSelector((state) => state.user.user);
     console.log(useSelector((state) => state));
     return (
         <BrowserRouter>
             <Announcement />
             <Navbar />
+            <ToastContainer />
             <Routes>
                 {/* Public routes */}
                 <Route path="/" element={<Home />} />
@@ -64,6 +68,7 @@ export const App = () => {
                 <Route path='/order/:id' element={<OrderDetail />} />
                 <Route path='/order/:id/return' element={<Return />} />
             </Routes>
+            <FloatingIcon/>
             <Footer />
         </BrowserRouter>
     );

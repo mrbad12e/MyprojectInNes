@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import CheckoutSteps from './CheckoutSteps';
 import { useSelector, useDispatch } from 'react-redux';
-import { Box } from '@mui/material';
+import { Box, Container, Grid } from '@mui/material';
 import { createOrder } from '../../redux/actions/orderActions';
 import { useNavigate } from 'react-router-dom';
 import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js';
@@ -54,25 +54,25 @@ const Payment = () => {
         });
     };
     return (
-        <Fragment>
-            <CheckoutSteps activeStep={2} />
+        <Container maxWidth="xl">
+            <Grid container justifyContent={'center'}>
+                <CheckoutSteps activeStep={2} />
+            </Grid>
 
-            <Box display={'flex'} justifyContent={'center'} alignItems={'center'} my={3} p={4}>
-                <Box width={'40vw'}>
-                    <PayPalScriptProvider options={initialOptions}>
-                        <PayPalButtons
-                            style={{
-                                layout: 'vertical',
-                                color: 'gold',
-                                label: 'pay',
-                            }}
-                            createOrder={(data, actions) => handleCreateOrder(data, actions)}
-                            onApprove={(data, actions) => handleOnApprove(data, actions)}
-                        />
-                    </PayPalScriptProvider>
-                </Box>
-            </Box>
-        </Fragment>
+            <Grid container justifyContent={'center'}>
+                <PayPalScriptProvider options={initialOptions}>
+                    <PayPalButtons
+                        style={{
+                            layout: 'vertical',
+                            color: 'gold',
+                            label: 'pay',
+                        }}
+                        createOrder={(data, actions) => handleCreateOrder(data, actions)}
+                        onApprove={(data, actions) => handleOnApprove(data, actions)}
+                    />
+                </PayPalScriptProvider>
+            </Grid>
+        </Container>
     );
 };
 

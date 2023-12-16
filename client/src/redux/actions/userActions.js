@@ -4,10 +4,10 @@ export const login = (email, password) => async (dispatch) => {
     try {
         dispatch({ type: 'LOGIN_REQUEST' });
         const config = { headers: { 'Content-Type': 'application/json' } };
-
         const { data } = await axios.post('/api/users/login', { email, password }, { config });
         dispatch({ type: 'LOGIN_SUCCESS', payload: data.user });
     } catch (error) {
+        console.log(error);
         dispatch({ type: 'LOGIN_FAIL', payload: error.response.data.message });
     }
 };
@@ -27,7 +27,6 @@ export const register = (username, email, password) => async (dispatch) => {
 export const addProfile = (form) => async (dispatch) =>{
     try {
         dispatch({ type: 'ADD_PROFILE_REQUEST' })
-        console.log(form);
         const config = { headers: { 'Content-Type': 'multipart/form-data' } };
         const { data } = await axios.post('/api/users/me/profile/add', form , {config})
 
@@ -92,3 +91,7 @@ export const resetPassword = (token, password, confirmPassword) => async (dispat
         dispatch({ type: 'RESET_PASSWORD_FAIL', payload: error.response.data.message });
     }
 };
+
+export const clearErrors = () => async (dispatch) => {
+    dispatch({ type: 'CLEAR_ERRORS' });
+}

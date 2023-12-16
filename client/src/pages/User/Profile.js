@@ -1,45 +1,37 @@
 import { useEffect, useState, Fragment } from 'react';
 import { Avatar, Badge, Button, Container, Grid, Paper, TextField, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Menubar } from './Menubar';
 import { CameraAlt } from '@mui/icons-material';
 import Loader from '../../components/Loader/Loader';
 export const Profile = () => {
-    const dispatch = useDispatch();
     const navigate = useNavigate();
     const backend_url = process.env.BACKEND_URL;
-    const { currentUser, isFetching, isAuthenticated } = useSelector((state) => state.user);
-    
-    const [username, setUsername] = useState(currentUser.username);
-    const [email, setEmail] = useState(currentUser.email);
-    const [avatar, setAvatar] = useState(`${backend_url}/${currentUser.avatar}`);
+    const { user, isFetching, isAuthenticated } = useSelector((state) => state.user);
 
+    const username = user.username;
+    const email = user.email;
+    const avatar = `${backend_url}/${user.avatar}`;
+    console.log(avatar);
     useEffect(() => {
         if (!isAuthenticated) {
             navigate('/login');
         }
-    }, [dispatch, navigate, isAuthenticated]);
+    }, [navigate, isAuthenticated]);
     return (
         <Fragment>
             {isFetching ? (
                 <Loader />
             ) : (
-                <Container maxWidth="lg" sx={{ my: 3 }}>
+                <Container maxWidth="xl" sx={{ my: 3 }}>
                     <Grid container spacing={2}>
                         <Menubar />
                         <Grid item xs={9}>
                             <Paper sx={{ m: 2, p: 4 }}>
                                 <Grid container rowGap={3}>
                                     <Grid container justifyContent={'center'}>
-                                        <Badge
-                                            badgeContent={<CameraAlt />}
-                                            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                                        >
-                                            <Button component="label" sx={{ '&:hover': { background: 'inherit' } }}>
-                                                <Avatar src={avatar} sx={{ width: 256, height: 256 }} />
-                                            </Button>
-                                        </Badge>
+                                        <Avatar src={avatar} sx={{ width: 256, height: 256 }} />
                                     </Grid>
                                     <Grid container alignItems={'center'}>
                                         <Grid item xs>
@@ -49,7 +41,7 @@ export const Profile = () => {
                                             <Typography>{username}</Typography>
                                         </Grid>
                                     </Grid>
-    
+
                                     <Grid container alignItems={'center'}>
                                         <Grid item xs>
                                             <Typography>Email</Typography>

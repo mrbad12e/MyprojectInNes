@@ -1,15 +1,16 @@
 import React from 'react';
 import Categories from '../../components/Category/Categories';
 import Products from '../../components/Product/Products';
-// import Slider from '../../components/Slider/Slider';
+import { Container } from '@mui/material'
+import MySlider from '../../components/Slider/Slider';
 
 const Home = () => {
     return (
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
-            {/* <Slider /> */}
+        <Container maxWidth='xl'>
+            <MySlider/>
             <Categories />
             <Products />
-        </div>
+        </Container>
     );
 };
 

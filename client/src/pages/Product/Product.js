@@ -1,6 +1,5 @@
 import { Add, Remove } from '@mui/icons-material';
 import {
-    Box,
     Container,
     FormControl,
     ImageList,
@@ -10,84 +9,65 @@ import {
     Select,
     Typography,
     IconButton,
+    Grid,
+    Button,
+    TextField,
 } from '@mui/material';
-import styled from 'styled-components';
-import { mobile } from '../../responsive';
+import { teal } from '@mui/material/colors';
 import { useParams } from 'react-router-dom';
 import { useState, useEffect, Fragment } from 'react';
-
 import { useDispatch, useSelector } from 'react-redux';
-import { getProductDetail } from '../../redux/actions/productActions';
+import { clearErrors, getProductDetail } from '../../redux/actions/productActions';
 import { addItemsToCart } from '../../redux/actions/cartActions';
 import Loader from '../../components/Loader/Loader';
-
-const Wrapper = styled.div`
-    padding: 50px;
-    display: flex;
-    ${mobile({ padding: '10px', flexDirection: 'column' })}
-`;
-
-const FilterColor = styled.div`
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background-color: ${(props) => props.color};
-    margin: 0px 5px;
-    cursor: pointer;
-    border: 5px solid lightgrey;
-`;
-
-const Amount = styled.span`
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
-    border: 1px solid teal;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0px 5px;
-    font-weight: 700;
-    cursor: auto;
-`;
-
-const Button = styled.button`
-    padding: 15px;
-    border: 2px solid teal;
-    background-color: white;
-    cursor: pointer;
-    font-weight: 500;
-    &:hover {
-        background-color: #f8f4f4;
-    }
-`;
+import { toast } from 'react-toastify';
 
 const Product = () => {
-    const backend_url = process.env.BACKEND_URL
+    const backend_url = process.env.BACKEND_URL;
     const { id } = useParams();
     const dispatch = useDispatch();
 
     const { product, isFetching, error } = useSelector((state) => state.productDetail);
     const [quantity, setQuantity] = useState(1);
+    const [color, setColor] = useState('');
+    const [size, setSize] = useState('');
+    const [disable, setDisable] = useState(true);
+
     const increaseQuantity = () => {
         if (product.Stock <= quantity) return;
-
         const qty = quantity + 1;
         setQuantity(qty);
     };
 
     const decreaseQuantity = () => {
         if (1 >= quantity) return;
-
         const qty = quantity - 1;
         setQuantity(qty);
     };
-
+    const handleSizeChange = (e) => {
+        setSize(e.target.value);
+        if (e.target.value && color) {
+            setDisable(false);
+        } else {
+            setDisable(true);
+        }
+    };
+    const handleColorChange = (e) => {
+        setColor(e.target.value)
+        if (e.target.value && size) {
+            setDisable(false);
+        } else {
+            setDisable(true);
+        }
+    }
     const handleAddToCart = () => {
         dispatch(addItemsToCart(id, quantity));
     };
     useEffect(() => {
-        if (error) console.log(error);
-
+        if (error) {
+            toast.error(error);
+            dispatch(clearErrors());
+        }
         dispatch(getProductDetail(id));
     }, [dispatch, id, error]);
     return (
@@ -95,9 +75,9 @@ const Product = () => {
             {isFetching ? (
                 <Loader />
             ) : (
-                <Container>
-                    <Wrapper>
-                        <Container>
+                <Container maxWidth="xl">
+                    <Grid container mt={5}>
+                        <Grid item xs={5}>
                             <ImageList cols={1} sx={{ flex: '1' }}>
                                 {product.img.slice(0, 2).map((img) => (
                                     <ImageListItem key={img}>
@@ -105,28 +85,35 @@ const Product = () => {
                                     </ImageListItem>
                                 ))}
                             </ImageList>
-                        </Container>
-                        <Container>
-                            <Typography variant="h4" py={2}>
-                                {product.title}
-                            </Typography>
-                            <Typography variant="h5" py={2}>
-                                {product.descrip}
-                            </Typography>
-                            <Typography variant="h5" py={2}>
-                                $ {product.price}
-                            </Typography>
-                            <Box display={'flex'} flexDirection={'row'} py={2} alignItems={'center'} paddingY={2}>
-                                <Box width="50%" display={'flex'} flexDirection={'row'} alignItems={'center'}>
-                                    <Typography fontSize={20} fontWeight={200}>
-                                        Color
-                                    </Typography>
-                                    {product.color && product.color.map((c) => <FilterColor color={c} key={c} />)}
-                                </Box>
-                                <Box width="50%">
+                        </Grid>
+
+                        <Grid item xs p={3}>
+                            <Grid>
+                                <Typography variant="h4">{product.title}</Typography>
+                                <br />
+                                <Typography variant="h5">{product.descrip}</Typography>
+                                <br />
+                                <Typography variant="h5">$ {product.price}</Typography>
+                                <br />
+                            </Grid>
+                            <Grid>
+                                <Grid container>
+                                    <FormControl sx={{ width: 200 }}>
+                                        <InputLabel>Color</InputLabel>
+                                        <Select label="Color" displayEmpty defaultValue={''} onChange={handleColorChange}>
+                                            {product.color.map((c, index) => (
+                                                <MenuItem value={c} key={index}>
+                                                    {c}
+                                                </MenuItem>
+                                            ))}
+                                        </Select>
+                                    </FormControl>
+                                </Grid>
+                                <br />
+                                <Grid container>
                                     <FormControl sx={{ width: 200 }}>
                                         <InputLabel>Size</InputLabel>
-                                        <Select label="Size" displayEmpty defaultValue={''}>
+                                        <Select label="Size" displayEmpty defaultValue={''} onChange={handleSizeChange}>
                                             {product.size.map((s, index) => (
                                                 <MenuItem value={s} key={index}>
                                                     {s}
@@ -134,22 +121,33 @@ const Product = () => {
                                             ))}
                                         </Select>
                                     </FormControl>
-                                </Box>
-                            </Box>
-                            <Box display={'flex'} flexDirection={'row'} alignItems={'center'} pt={2}>
-                                <Box width="50%" display={'flex'} flexDirection={'row'} alignItems={'center'}>
+                                </Grid>
+                            </Grid>
+                            <br />
+                            <Grid>
+                                <Grid container>
                                     <IconButton onClick={decreaseQuantity}>
                                         <Remove />
                                     </IconButton>
-                                    <Amount>{quantity}</Amount>
+                                    <TextField value={quantity} InputProps={{ readOnly: true }} />
                                     <IconButton onClick={increaseQuantity}>
                                         <Add />
                                     </IconButton>
-                                </Box>
-                                <Button onClick={handleAddToCart}>ADD TO CART</Button>
-                            </Box>
-                        </Container>
-                    </Wrapper>
+                                </Grid>
+                                <br />
+                                <Grid container>
+                                    <Button
+                                        onClick={handleAddToCart}
+                                        disabled={disable}
+                                        variant="outlined"
+                                        sx={{ borderColor: teal[500], color: teal[500] }}
+                                    >
+                                        ADD TO CART
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </Grid>
                 </Container>
             )}
         </Fragment>
